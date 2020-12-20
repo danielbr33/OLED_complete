@@ -8,6 +8,10 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Middlewares/Third_Party/FatFs/src/option/subdir.mk
+-include Middlewares/Third_Party/FatFs/src/subdir.mk
+-include FATFS/Target/subdir.mk
+-include FATFS/App/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
@@ -30,24 +34,24 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-OLED_SD.elf \
+OLED_complete.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-OLED_SD.list \
+OLED_complete.list \
 
 OBJCOPY_BIN += \
-OLED_SD.bin \
+OLED_complete.bin \
 
 
 # All Target
-all: OLED_SD.elf secondary-outputs
+all: OLED_complete.elf secondary-outputs
 
 # Tool invocations
-OLED_SD.elf: $(OBJS) $(USER_OBJS) D:\CubeIDERepository\OLED_SD\STM32F429ZITX_FLASH.ld
-	arm-none-eabi-gcc -o "OLED_SD.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\CubeIDERepository\OLED_SD\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="OLED_SD.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+OLED_complete.elf: $(OBJS) $(USER_OBJS) D:\CubeIDERepository\OLED_complete\STM32F429ZITX_FLASH.ld
+	arm-none-eabi-gcc -o "OLED_complete.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\CubeIDERepository\OLED_complete\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="OLED_complete.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -56,13 +60,13 @@ default.size.stdout: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-OLED_SD.list: $(EXECUTABLES)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "OLED_SD.list"
+OLED_complete.list: $(EXECUTABLES)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "OLED_complete.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-OLED_SD.bin: $(EXECUTABLES)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "OLED_SD.bin"
+OLED_complete.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "OLED_complete.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
