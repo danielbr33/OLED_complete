@@ -15,7 +15,7 @@
 #include "Buffer.h"
 
 
-#define STM32F3
+#define STM32F4
 #if defined(STM32F1)
 #include "stm32f1xx_hal.h"
 #elif defined(STM32F4)

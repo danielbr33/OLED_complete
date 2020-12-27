@@ -10,6 +10,7 @@ class Letter{
 
 public:
 	Letter(uint16_t* tab, uint8_t height, uint8_t width);
+	Letter(uint32_t* tab, uint8_t height, uint8_t width);
 	~Letter();
 	uint32_t* getLetter();
 	uint8_t getWidth();
