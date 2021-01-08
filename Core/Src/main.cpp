@@ -27,6 +27,8 @@
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
+#include "Oled/SSD1306.h"
+#include "Interface/Interface_manager.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -55,7 +57,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
+extern "C" void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */

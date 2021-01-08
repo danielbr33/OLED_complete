@@ -1,9 +1,7 @@
 #ifndef LETTER_H
 #define LETTER_H
 
-#include <iostream>
 #include "stdint.h"
-using namespace std;
 #define MAX_WIDTH 16
 
 class Letter{

@@ -12,33 +12,6 @@ void Buffer::fill(Color color) {
 		}
 }
 
-/*void Buffer::print() {
-	for (uint8_t i = 0; i < this->buffer_width; i++) {
-		for (uint8_t k = 0; k < (this->buffer_height / BUFFOR_PART_HEIGHT); k++) {
-			for (uint8_t j = 8; j > 0; j--) {
-				if (getBit(table[i][k], j - 1) == 0)
-					cout << "-";
-				else
-					cout << "+";
-			}
-		}
-	}
-	cout << endl;
-}*/
-
-void Buffer::print() {
-	for (uint8_t i = 0; i < (this->buffer_height / BUFFOR_PART_HEIGHT); i++){
-		for (int8_t j = 0; j < 8; j++) {
-			for (uint8_t k = 0; k < this->buffer_width; k++){
-				if (getBit(table[i][k], j))
-					cout << "-";
-				else
-					cout << "+";
-			}
-			cout << endl;
-		}
-	}
-}
 
 uint8_t* Buffer::getBuffer(uint8_t verse){
 	return this->table[verse];
