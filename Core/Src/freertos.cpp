@@ -32,6 +32,8 @@
 #include "sdio.h"
 #include "usart.h"
 #include "gpio.h"
+#include "Oled/SSD1306.h"
+#include "Interface/Interface_manager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -155,7 +157,7 @@ void StartSDTask(void const * argument)
 	int indx = 0;
 	MX_FATFS_Init();
 
-	HAL_UART_Transmit(&huart3, "Connected to UART Two\r\n", 23, 10);
+	HAL_UART_Transmit(&huart3, (uint8_t*)"Connected to UART Two\r\n", 23, 10);
 	Mount_SD("/");
 	Format_SD();
 	Create_File("FILE1.TXT\r\n");
