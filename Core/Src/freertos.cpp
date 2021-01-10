@@ -53,7 +53,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+extern Interface_manager* Interface1;
+extern Interface_manager* Interface2;
+extern SSD1306* oled;
+extern SSD1306* oled2;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId sd_taskHandle;
@@ -178,13 +181,13 @@ void StartSDTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	Mount_SD("/");
-	sprintf(buffer, "Hello ---> %d\r\n", indx);
-	Update_File("FILE1.TXT", buffer);
-	sprintf(buffer, "world ---> %d\r\n", indx);
-	Update_File("FILE2.TXT", buffer);
-	Unmount_SD("/");
-	indx++;
+//	Mount_SD("/");
+//	sprintf(buffer, "Hello ---> %d\r\n", indx);
+//	Update_File("FILE1.TXT", buffer);
+//	sprintf(buffer, "world ---> %d\r\n", indx);
+//	Update_File("FILE2.TXT", buffer);
+//	Unmount_SD("/");
+//	indx++;
 
 	osDelay(2000);
   }
@@ -204,7 +207,9 @@ void StartOledTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	oled->SPI_Interrupt_DMA();
+	oled2->SPI_Interrupt_DMA();
+	osDelay(50);
   }
   /* USER CODE END StartOledTask */
 }
@@ -222,7 +227,8 @@ void StartInterfaceTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	Interface2->interrupt();
+    osDelay(50);
   }
   /* USER CODE END StartInterfaceTask */
 }

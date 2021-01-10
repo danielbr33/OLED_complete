@@ -51,7 +51,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+SSD1306* oled;
+SSD1306* oled2;
+Interface_manager* Interface1;
+Interface_manager* Interface2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,7 +76,23 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	SSD1306::gpio_struct  gpio_reset;
+	gpio_reset.port = OLED_RESET_GPIO_Port;
+	gpio_reset.pin= OLED_RESET_Pin;
 
+	SSD1306::gpio_struct gpio_dc;
+	gpio_dc.port = OLED_DC_GPIO_Port;
+	gpio_dc.pin = OLED_DC_Pin;
+
+	SSD1306::gpio_struct gpio_cs;
+	gpio_cs.port = OLED_CS_GPIO_Port;
+	gpio_cs.pin = OLED_CS_Pin;
+
+	oled = new SSD1306(&hspi1, gpio_reset, gpio_dc, gpio_cs);
+	oled2 = new SSD1306(&hi2c1, 0x3C<<1);
+
+	Interface1=new Interface_manager(&huart3, oled);
+	Interface2=new Interface_manager(&huart3, oled2);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -101,7 +120,18 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
+  oled->ChangeDMA(SET_ON);
+  oled->Init();
+  oled->Fill(Black);
+  HAL_Delay(5);
+  oled->WriteString("HELLO", Font11x18, White, 2, 10);
+  oled2->ChangeDMA(SET_ON);
+  oled2->Init();
+  oled2->Fill(Black);
+  oled2->WriteString("HELLO2", Font11x18, White, 2, 10);
+  HAL_Delay(1000);
+  uint8_t i=0;
+  Interface2->interrupt();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
