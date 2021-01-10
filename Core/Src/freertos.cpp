@@ -168,16 +168,7 @@ void StartDefaultTask(void const * argument)
 void StartSDTask(void const * argument)
 {
   /* USER CODE BEGIN StartSDTask */
-	char buffer[100];
-	int indx = 0;
-	MX_FATFS_Init();
 
-	HAL_UART_Transmit(&huart3, (uint8_t*)"Connected to UART Two\r\n", 23, 10);
-	Mount_SD("/");
-	Format_SD();
-	Create_File("FILE1.TXT\r\n");
-	Create_File("FILE2.TXT\r\n");
-	Unmount_SD("/");
   /* Infinite loop */
   for(;;)
   {

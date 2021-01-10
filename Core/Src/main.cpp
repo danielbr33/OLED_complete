@@ -32,6 +32,7 @@
 /* USER CODE BEGIN Includes */
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
+#include "File_Handling.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -124,14 +125,12 @@ int main(void)
   oled->Init();
   oled->Fill(Black);
   HAL_Delay(5);
-  oled->WriteString("HELLO", Font11x18, White, 2, 10);
   oled2->ChangeDMA(SET_ON);
   oled2->Init();
   oled2->Fill(Black);
-  oled2->WriteString("HELLO2", Font11x18, White, 2, 10);
   HAL_Delay(1000);
   uint8_t i=0;
-  Interface2->interrupt();
+
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
