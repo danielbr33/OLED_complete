@@ -34,6 +34,7 @@
 #include "gpio.h"
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,6 +66,10 @@ osThreadId interfaceTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
+void send_uart (char *string)
+{
+	HAL_UART_Transmit(&huart3, (uint8_t *)string, strlen (string), HAL_MAX_DELAY);  //TODO change uart
+}
 
 /* USER CODE END FunctionPrototypes */
 
@@ -168,18 +173,94 @@ void StartDefaultTask(void const * argument)
 void StartSDTask(void const * argument)
 {
   /* USER CODE BEGIN StartSDTask */
+	FATFS fs;  // file system
+	FIL fil; // File
+	FILINFO fno;
+	FRESULT fresult;  // result
+	UINT br, bw;  // File read/write count
+	/**** capacity related *****/
+	FATFS *pfs;
+	DWORD fre_clust;
+	uint32_t total, free_space;
+
+	char* read_data;
+	char buffer[100];
+	char name[20];
+	uint32_t size;
+	uint8_t width=7;
+	uint8_t height=10;
+	//sprintf(name, "Font%dx%d.txt", width, height);
+	sprintf(name, "Font7x10.txt");
+
+	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
+	if (fresult != FR_OK) send_uart ("ERROR!!! in mounting SD CARD...\n\n");
+	else send_uart("SD CARD mounted successfully...\n");
+
+
+	/**** check whether the file exists or not ****/
+	fresult = f_stat (name, &fno);
+	if (fresult != FR_OK) 	{
+		char *buf = (char*)malloc(100*sizeof(char));
+		sprintf (buf, "ERRROR!!! *%s* does not exists\n\n", name);
+		send_uart (buf);
+		free(buf);
+	}
+	else {
+		/* Open file to read */
+		fresult = f_open(&fil, name, FA_READ);
+		if (fresult != FR_OK) {
+			char *buf = (char*)malloc(100*sizeof(char));
+			sprintf (buf, "ERROR!!! No. %d in opening file *%s*\n\n", fresult, name);
+			send_uart(buf);
+			free(buf);
+	  	}
+
+	  	/* Read data from the file
+	  	 * 		* see the function details for the arguments */
+		size = f_size(&fil);
+	  	read_data = (char*)malloc(size*sizeof(char)/1000);
+	  	fresult = f_read (&fil,read_data, size/1000, &br);
+	  	char *buf = (char*)malloc(100*sizeof(char));
+	  	sprintf(buf, "%s", read_data);
+	  	send_uart(buf);
+	  	free(buf);
+	 	if (fresult != FR_OK) {
+			char *buf = (char*)malloc(100*sizeof(char));
+	 		free(read_data);
+	  	 	sprintf (buf, "ERROR!!! No. %d in reading file *%s*\n\n", fresult, name);
+	  	  	send_uart(buf);
+	  	  	free(buf);
+		}
+
+  		else  {
+  			free(read_data);
+
+  			/* Close file */
+  			fresult = f_close(&fil);
+  			if (fresult != FR_OK) {
+  				char *buf = (char*)malloc(100*sizeof(char));
+  				sprintf (buf, "ERROR!!! No. %d in closing file *%s*\n\n", fresult, name);
+  				send_uart(buf);
+  				free(buf);
+  			}
+  			else
+  			{
+  				char *buf = (char*)malloc(100*sizeof(char));
+  				sprintf (buf, "File *%s* CLOSED successfully\n", name);
+  				send_uart(buf);
+  				free(buf);
+  			}
+  		}
+	}
+
+
+	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
+	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
+	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");
 
   /* Infinite loop */
   for(;;)
   {
-//	Mount_SD("/");
-//	sprintf(buffer, "Hello ---> %d\r\n", indx);
-//	Update_File("FILE1.TXT", buffer);
-//	sprintf(buffer, "world ---> %d\r\n", indx);
-//	Update_File("FILE2.TXT", buffer);
-//	Unmount_SD("/");
-//	indx++;
-
 	osDelay(2000);
   }
   /* USER CODE END StartSDTask */
