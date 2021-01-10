@@ -17,9 +17,11 @@ void Interface_manager::init(){
 }
 
 void Interface_manager::interrupt(){
-	Ssd_1306->sendAction( readKey() ) ;
+	if(button!=0)
+		Ssd_1306->sendAction( readKey() ) ;
 	Ssd_1306->refresh() ;
 	display() ;
+	button=0;
     HAL_UART_Receive_IT(uart_interface, (uint8_t*)&button, 1);
 }
 
