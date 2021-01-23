@@ -191,7 +191,7 @@ void StartSDTask(void const * argument)
 	uint8_t width=7;
 	uint8_t height=10;
 	//sprintf(name, "Font%dx%d.txt", width, height);
-	sprintf(name, "Font6x8.txt");
+	sprintf(name, "Font11x18.txt");
 
 	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
 	if (fresult != FR_OK) send_uart ("ERROR!!! in mounting SD CARD...\n\n");
