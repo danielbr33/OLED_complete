@@ -32,7 +32,6 @@
 /* USER CODE BEGIN Includes */
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
-#include "File_Handling.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,6 +76,7 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
 	SSD1306::gpio_struct  gpio_reset;
 	gpio_reset.port = OLED_RESET_GPIO_Port;
 	gpio_reset.pin= OLED_RESET_Pin;

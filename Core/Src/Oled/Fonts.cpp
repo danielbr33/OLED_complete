@@ -1,5 +1,4 @@
 #include "Fonts.h"
-#include "File_Handling.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "sdio.h"
@@ -316,15 +315,6 @@ void Fonts::createFont6x8() {
 }
 
 void Fonts::createFont7x10() {
-//	char buffer[100];
-//	int indx = 0;
-//	MX_FATFS_Init();
-//
-//	HAL_UART_Transmit(&huart3, (uint8_t*)"Connected to UART Two\r\n", 23, 10);
-//	Mount_SD("/");
-//	sprintf(buffer, "world ---> %d\r\n", indx);
-//	Update_File("FILE2.TXT", buffer);
-//	Unmount_SD("/");
 	this->width = 7;
 	this->height = 10;
 	Font_7x10 = new Letter* [95];

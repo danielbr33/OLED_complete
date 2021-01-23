@@ -26,7 +26,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "File_Handling.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "sdio.h"
@@ -35,6 +34,10 @@
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
 #include "stdlib.h"
+#include "cstring"
+#include "string.h"
+#include "stdio.h"
+#include "stm32f4xx_hal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +61,13 @@ extern Interface_manager* Interface1;
 extern Interface_manager* Interface2;
 extern SSD1306* oled;
 extern SSD1306* oled2;
+
+FATFS fs;  // file system
+FIL fil; // File
+FRESULT fresult;  // result
+FILINFO fno;
+UINT br, bw;  // File read/write count
+/**** capacity related *****/
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId sd_taskHandle;
@@ -173,15 +183,6 @@ void StartDefaultTask(void const * argument)
 void StartSDTask(void const * argument)
 {
   /* USER CODE BEGIN StartSDTask */
-	FATFS fs;  // file system
-	FIL fil; // File
-	FILINFO fno;
-	FRESULT fresult;  // result
-	UINT br, bw;  // File read/write count
-	/**** capacity related *****/
-	FATFS *pfs;
-	DWORD fre_clust;
-	uint32_t total, free_space;
 
 	char* read_data;
 	char buffer[100];
@@ -190,7 +191,7 @@ void StartSDTask(void const * argument)
 	uint8_t width=7;
 	uint8_t height=10;
 	//sprintf(name, "Font%dx%d.txt", width, height);
-	sprintf(name, "Font7x10.txt");
+	sprintf(name, "Font6x8.txt");
 
 	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
 	if (fresult != FR_OK) send_uart ("ERROR!!! in mounting SD CARD...\n\n");
@@ -218,10 +219,11 @@ void StartSDTask(void const * argument)
 	  	/* Read data from the file
 	  	 * 		* see the function details for the arguments */
 		size = f_size(&fil);
-	  	read_data = (char*)malloc(size*sizeof(char)/1000);
-	  	fresult = f_read (&fil,read_data, size/1000, &br);
+	  	read_data = (char*)malloc(size);
+	  	fresult = f_read (&fil,read_data, size, &br);
 	  	char *buf = (char*)malloc(100*sizeof(char));
 	  	sprintf(buf, "%s", read_data);
+	  	//HAL_Delay(100);
 	  	send_uart(buf);
 	  	free(buf);
 	 	if (fresult != FR_OK) {
@@ -257,7 +259,6 @@ void StartSDTask(void const * argument)
 	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
 	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
 	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");
-
   /* Infinite loop */
   for(;;)
   {
