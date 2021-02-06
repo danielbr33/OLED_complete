@@ -296,6 +296,28 @@ static uint32_t Font11x18[] = {
 	0x0,	0x300,	0x180,	0x180,	0x180,	0x300,	0x300,	0x300,	0x180,	0x0,	0x0	//	~
 };
 
+#include "dma.h"
+#include "fatfs.h"
+#include "sdio.h"
+#include "usart.h"
+#include "gpio.h"
+#include "stdlib.h"
+#include "cstring"
+#include "string.h"
+#include "stdio.h"
+#include "stm32f4xx_hal.h"
+
+FATFS fs;  // file system
+FIL fil; // File
+FRESULT fresult;  // result
+FILINFO fno;
+UINT br, bw;  // File read/write count
+
+void Fonts::send_uart (char *string)
+{
+	HAL_UART_Transmit(&huart3, (uint8_t *)string, strlen (string), HAL_MAX_DELAY);  //TODO change uart
+}
+
 void Fonts::createFont11x18() {
 	this->width = 11;
 	this->height = 18;
@@ -315,6 +337,51 @@ void Fonts::createFont6x8() {
 }
 
 void Fonts::createFont7x10() {
+	char* read_data;
+	char name[20];
+	uint32_t size;
+	uint8_t width=7;
+	uint8_t height=10;
+	sprintf(name, "Font7x10.txt");
+	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
+	if (fresult != FR_OK)
+		send_uart ("ERROR!!! in mounting SD CARD...\n\n");
+	else
+		send_uart("SD CARD mounted successfully...\n");
+	fresult = f_stat (name, &fno);
+	if (fresult != FR_OK)
+		send_uart ("ERRROR!!! file does not exists\n\n");
+	else {
+		fresult = f_open(&fil, name, FA_READ);		/* Open file to read */
+		if (fresult != FR_OK)
+			send_uart ("ERROR!!! File not opened...\n\n");
+		size = f_size(&fil);
+	  	read_data = (char*)malloc(size);
+	  	fresult = f_read (&fil,read_data, size, &br);	  	//Read data from the file
+
+	  	char *buf = (char*)malloc(100*sizeof(char));
+	  	sprintf(buf, "%s", read_data);
+	  	send_uart(buf);
+	  	free(buf);
+	  	if (fresult != FR_OK) {
+	 		free(read_data);
+	 		send_uart ("ERROR!!! Problem with reading...\n\n");
+		}
+
+  		else  {
+  			free(read_data);
+	  		/* Close file */
+  			fresult = f_close(&fil);
+  			if (fresult != FR_OK)
+  				send_uart ("ERROR!!! not closed...\n\n");
+	  		else
+	  			send_uart ("ERROR!!! closed succesfully...\n\n");
+	  	}
+	}
+	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
+	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
+	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");;
+
 	this->width = 7;
 	this->height = 10;
 	Font_7x10 = new Letter* [95];

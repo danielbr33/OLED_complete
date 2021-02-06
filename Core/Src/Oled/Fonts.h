@@ -7,6 +7,7 @@ using namespace std;
 class Fonts{
 
 public:
+	void send_uart (char *string);
 	void createFont6x8();
 	void createFont7x10();
 	void createFont11x18();
@@ -23,4 +24,3 @@ private:
 };
 
 #endif FONTS_H
-

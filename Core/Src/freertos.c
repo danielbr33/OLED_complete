@@ -26,7 +26,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "File_Handling.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "sdio.h"
@@ -34,6 +33,11 @@
 #include "gpio.h"
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
+#include "stdlib.h"
+#include "cstring"
+#include "string.h"
+#include "stdio.h"
+#include "stm32f4xx_hal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,33 +57,45 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+extern Interface_manager* Interface1;
+extern Interface_manager* Interface2;
+extern SSD1306* oled;
+extern SSD1306* oled2;
 
+FATFS fs;  // file system
+FIL fil; // File
+FRESULT fresult;  // result
+FILINFO fno;
+UINT br, bw;  // File read/write count
+/**** capacity related *****/
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
-osThreadId sd_taskHandle;
 osThreadId oledTaskHandle;
 osThreadId interfaceTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
+void send_uart (char *string)
+{
+	HAL_UART_Transmit(&huart3, (uint8_t *)string, strlen (string), HAL_MAX_DELAY);  //TODO change uart
+}
 
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
-void StartSDTask(void const * argument);
 void StartOledTask(void const * argument);
 void StartInterfaceTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+extern "C" void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
 static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
 
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
+extern "C" void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
 {
   *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
   *ppxIdleTaskStackBuffer = &xIdleStack[0];
@@ -119,12 +135,8 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 256);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of sd_task */
-  osThreadDef(sd_task, StartSDTask, osPriorityNormal, 0, 256);
-  sd_taskHandle = osThreadCreate(osThread(sd_task), NULL);
-
   /* definition and creation of oledTask */
-  osThreadDef(oledTask, StartOledTask, osPriorityBelowNormal, 0, 256);
+  osThreadDef(oledTask, StartOledTask, osPriorityNormal, 0, 2048);
   oledTaskHandle = osThreadCreate(osThread(oledTask), NULL);
 
   /* definition and creation of interfaceTask */
@@ -155,42 +167,6 @@ void StartDefaultTask(void const * argument)
   /* USER CODE END StartDefaultTask */
 }
 
-/* USER CODE BEGIN Header_StartSDTask */
-/**
-* @brief Function implementing the sd_task thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartSDTask */
-void StartSDTask(void const * argument)
-{
-  /* USER CODE BEGIN StartSDTask */
-	char buffer[100];
-	int indx = 0;
-	MX_FATFS_Init();
-
-	HAL_UART_Transmit(&huart3, (uint8_t*)"Connected to UART Two\r\n", 23, 10);
-	Mount_SD("/");
-	Format_SD();
-	Create_File("FILE1.TXT\r\n");
-	Create_File("FILE2.TXT\r\n");
-	Unmount_SD("/");
-  /* Infinite loop */
-  for(;;)
-  {
-	Mount_SD("/");
-	sprintf(buffer, "Hello ---> %d\r\n", indx);
-	Update_File("FILE1.TXT", buffer);
-	sprintf(buffer, "world ---> %d\r\n", indx);
-	Update_File("FILE2.TXT", buffer);
-	Unmount_SD("/");
-	indx++;
-
-	osDelay(2000);
-  }
-  /* USER CODE END StartSDTask */
-}
-
 /* USER CODE BEGIN Header_StartOledTask */
 /**
 * @brief Function implementing the oledTask thread.
@@ -204,7 +180,9 @@ void StartOledTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	oled->SPI_Interrupt_DMA();
+	oled2->SPI_Interrupt_DMA();
+	osDelay(50);
   }
   /* USER CODE END StartOledTask */
 }
@@ -222,7 +200,8 @@ void StartInterfaceTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	Interface2->interrupt();
+    osDelay(50);
   }
   /* USER CODE END StartInterfaceTask */
 }

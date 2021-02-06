@@ -62,15 +62,9 @@ extern Interface_manager* Interface2;
 extern SSD1306* oled;
 extern SSD1306* oled2;
 
-FATFS fs;  // file system
-FIL fil; // File
-FRESULT fresult;  // result
-FILINFO fno;
-UINT br, bw;  // File read/write count
 /**** capacity related *****/
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
-osThreadId sd_taskHandle;
 osThreadId oledTaskHandle;
 osThreadId interfaceTaskHandle;
 
@@ -84,7 +78,6 @@ void send_uart (char *string)
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
-void StartSDTask(void const * argument);
 void StartOledTask(void const * argument);
 void StartInterfaceTask(void const * argument);
 
@@ -137,16 +130,12 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 256);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of sd_task */
-  osThreadDef(sd_task, StartSDTask, osPriorityNormal, 0, 256);
-  sd_taskHandle = osThreadCreate(osThread(sd_task), NULL);
-
   /* definition and creation of oledTask */
-  osThreadDef(oledTask, StartOledTask, osPriorityBelowNormal, 0, 256);
+  osThreadDef(oledTask, StartOledTask, osPriorityNormal, 0, 256);
   oledTaskHandle = osThreadCreate(osThread(oledTask), NULL);
 
   /* definition and creation of interfaceTask */
-  osThreadDef(interfaceTask, StartInterfaceTask, osPriorityBelowNormal, 0, 256);
+  osThreadDef(interfaceTask, StartInterfaceTask, osPriorityBelowNormal, 0, 2048);
   interfaceTaskHandle = osThreadCreate(osThread(interfaceTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -171,100 +160,6 @@ void StartDefaultTask(void const * argument)
     osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
-}
-
-/* USER CODE BEGIN Header_StartSDTask */
-/**
-* @brief Function implementing the sd_task thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartSDTask */
-void StartSDTask(void const * argument)
-{
-  /* USER CODE BEGIN StartSDTask */
-
-	char* read_data;
-	char buffer[100];
-	char name[20];
-	uint32_t size;
-	uint8_t width=7;
-	uint8_t height=10;
-	//sprintf(name, "Font%dx%d.txt", width, height);
-	sprintf(name, "Font11x18.txt");
-
-	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
-	if (fresult != FR_OK) send_uart ("ERROR!!! in mounting SD CARD...\n\n");
-	else send_uart("SD CARD mounted successfully...\n");
-
-
-	/**** check whether the file exists or not ****/
-	fresult = f_stat (name, &fno);
-	if (fresult != FR_OK) 	{
-		char *buf = (char*)malloc(100*sizeof(char));
-		sprintf (buf, "ERRROR!!! *%s* does not exists\n\n", name);
-		send_uart (buf);
-		free(buf);
-	}
-	else {
-		/* Open file to read */
-		fresult = f_open(&fil, name, FA_READ);
-		if (fresult != FR_OK) {
-			char *buf = (char*)malloc(100*sizeof(char));
-			sprintf (buf, "ERROR!!! No. %d in opening file *%s*\n\n", fresult, name);
-			send_uart(buf);
-			free(buf);
-	  	}
-
-	  	/* Read data from the file
-	  	 * 		* see the function details for the arguments */
-		size = f_size(&fil);
-	  	read_data = (char*)malloc(size);
-	  	fresult = f_read (&fil,read_data, size, &br);
-	  	char *buf = (char*)malloc(100*sizeof(char));
-	  	sprintf(buf, "%s", read_data);
-	  	//HAL_Delay(100);
-	  	send_uart(buf);
-	  	free(buf);
-	 	if (fresult != FR_OK) {
-			char *buf = (char*)malloc(100*sizeof(char));
-	 		free(read_data);
-	  	 	sprintf (buf, "ERROR!!! No. %d in reading file *%s*\n\n", fresult, name);
-	  	  	send_uart(buf);
-	  	  	free(buf);
-		}
-
-  		else  {
-  			free(read_data);
-
-  			/* Close file */
-  			fresult = f_close(&fil);
-  			if (fresult != FR_OK) {
-  				char *buf = (char*)malloc(100*sizeof(char));
-  				sprintf (buf, "ERROR!!! No. %d in closing file *%s*\n\n", fresult, name);
-  				send_uart(buf);
-  				free(buf);
-  			}
-  			else
-  			{
-  				char *buf = (char*)malloc(100*sizeof(char));
-  				sprintf (buf, "File *%s* CLOSED successfully\n", name);
-  				send_uart(buf);
-  				free(buf);
-  			}
-  		}
-	}
-
-
-	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
-	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
-	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");
-  /* Infinite loop */
-  for(;;)
-  {
-	osDelay(2000);
-  }
-  /* USER CODE END StartSDTask */
 }
 
 /* USER CODE BEGIN Header_StartOledTask */
