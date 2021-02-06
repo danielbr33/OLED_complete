@@ -382,8 +382,31 @@ void Fonts::createFont7x10() {
 	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
 	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");;
 
-	this->width = 7;
-	this->height = 10;
+	uint16_t counter = 0;
+	uint16_t temp = 0;
+	while(name[counter]<'0' || name[counter]>'9'){
+		counter+=1;
+	}
+	temp=name[counter]-'0';
+	counter+=1;
+	if (name[counter]>='0' && name[counter]<='9'){
+		temp = temp*10 + name[counter]-'0';
+		counter+=1;
+	}
+	this->width=temp;
+
+	while(name[counter]<'0' || name[counter]>'9'){
+		counter+=1;
+	}
+	temp=name[counter] - '0';
+	counter+=1;
+	if (name[counter]>='0' && name[counter]<='9'){
+		temp = temp*10 + name[counter]-'0';
+		counter+=1;
+	}
+	this->height = temp;
+
+	counter=0;
 	Font_7x10 = new Letter* [95];
 	for (uint8_t i = 0; i < 95; i++) {
 		Font_7x10[i] = new Letter(&Font7x10[i * width], height, width);
