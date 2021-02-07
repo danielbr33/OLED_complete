@@ -319,21 +319,11 @@ void Fonts::send_uart (char *string)
 }
 
 void Fonts::createFont11x18() {
-	this->width = 11;
-	this->height = 18;
-	Font_11x18 = new Letter * [95];
-	for (uint8_t i = 0; i < 95; i++) {
-		Font_11x18[i] = new Letter(&Font11x18[i * width], height, width);
-	}	
+
 }
 
 void Fonts::createFont6x8() {
-	this->width = 6;
-	this->height = 8;
-	Font_6x8 = new Letter* [95];
-	for (uint8_t i = 0; i < 95; i++) {
-		Font_6x8[i] = new Letter(&Font6x8[i * width], height, width);
-	}
+
 }
 
 void Fonts::createFont7x10() {
@@ -383,7 +373,7 @@ void Fonts::createFont7x10() {
 	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");;
 
 	uint16_t counter = 0;
-	uint16_t temp = 0;
+	uint32_t temp = 0;
 	while(name[counter]<'0' || name[counter]>'9'){
 		counter+=1;
 	}
@@ -406,10 +396,33 @@ void Fonts::createFont7x10() {
 	}
 	this->height = temp;
 
+	uint32_t table[this->height];
 	counter=0;
+	temp=0;
+	uint8_t counter_width = 0;
+	uint8_t counter_height = 0;
 	Font_7x10 = new Letter* [95];
 	for (uint8_t i = 0; i < 95; i++) {
-		Font_7x10[i] = new Letter(&Font7x10[i * width], height, width);
+		while (counter_height < this->height){
+			while (read_data[counter]!='-' && read_data[counter]!='#')
+				counter+=1;
+			if (read_data[counter+1]!='-'  && read_data[counter+1]!='#')
+				counter+=1;
+			while (counter_width < this->width) {
+				uint8_t a=read_data[counter];
+				if(read_data[counter]=='#')
+					setBit(temp, counter_width);
+				counter_width+=1;
+				counter+=1;
+			}
+			temp=temp;
+			counter_width=0;
+			table[counter_height] = temp;
+			temp=0;
+			counter_height+=1;
+		}
+		counter_height=0;
+		Font_7x10[i] = new Letter(table, height, width);
 	}
 }
 

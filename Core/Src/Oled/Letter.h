@@ -2,12 +2,12 @@
 #define LETTER_H
 
 #include "stdint.h"
+#include "bitoperations.h"
 #define MAX_WIDTH 16
 
 class Letter{
 
 public:
-	Letter(uint16_t* tab, uint8_t height, uint8_t width);
 	Letter(uint32_t* tab, uint8_t height, uint8_t width);
 	~Letter();
 	uint32_t* getLetter();

@@ -2,6 +2,7 @@
 #define FONTS_H
 
 #include "Letter.h"
+#include "bitoperations.h"
 using namespace std;
 
 class Fonts{

@@ -57,4 +57,6 @@ void Interface_manager::display(){
             }
         }
     }
+    oled->WriteString("[\]^_abcdefghij", Font7x10, Black, 5, 25);
+    oled->WriteString("ABCDEFGHIJKLMVWXYZ", Font7x10, Black, 5, 36);
 }

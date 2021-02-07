@@ -2,6 +2,7 @@
 #define BUFFER_H
 
 #include "Fonts.h"
+#include "bitoperations.h"
 
 typedef enum { Font6x8, Font7x10, Font11x18 } Font;
 typedef enum { Black, White } Color;
