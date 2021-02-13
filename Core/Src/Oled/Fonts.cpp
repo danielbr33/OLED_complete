@@ -43,8 +43,6 @@ void Fonts::createFont(const char* path) {
 	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
 	if (fresult != FR_OK)
 		send_uart ("ERROR!!! in mounting SD CARD...\n\n");
-	else
-		send_uart("SD CARD mounted successfully...\n");
 	fresult = f_stat (name, &fno);
 	if (fresult != FR_OK)
 		send_uart ("ERRROR!!! file does not exists\n\n");
@@ -56,28 +54,20 @@ void Fonts::createFont(const char* path) {
 	  	read_data = (char*)malloc(size);
 	  	fresult = f_read (&fil,read_data, size, &br);	  	//Read data from the file
 
-	  	char *buf = (char*)malloc(100*sizeof(char));
-	  	sprintf(buf, "%s", read_data);
-	  	send_uart(buf);
-	  	free(buf);
 	  	if (fresult != FR_OK) {
 	 		free(read_data);
 	 		send_uart ("ERROR!!! Problem with reading...\n\n");
 		}
-
   		else  {
-  			free(read_data);
 	  		/* Close file */
   			fresult = f_close(&fil);
   			if (fresult != FR_OK)
   				send_uart ("ERROR!!! not closed...\n\n");
-	  		else
-	  			send_uart ("ERROR!!! closed succesfully...\n\n");
 	  	}
 	}
 	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
-	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
-	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");;
+	if (fresult != FR_OK)
+		send_uart ("ERROR!!! in UNMOUNTING SD CARD\n\n\n");
 
 	uint16_t counter = 0;
 	uint32_t temp = 0;
@@ -87,17 +77,33 @@ void Fonts::createFont(const char* path) {
 	temp=0;
 	uint8_t counter_width = 0;
 	uint8_t counter_height = 0;
+	char test=0;
 	Font = new Letter* [95];
 	for (uint8_t i = 0; i < 95; i++) {
 		while (counter_height < this->height){
-			while (read_data[counter]!='-' && read_data[counter]!='#')
+			while (read_data[counter]!='-' && read_data[counter]!='#'){
+				test=read_data[counter];
+				send_uart(&test);
 				counter+=1;
-			if (read_data[counter+1]!='-'  && read_data[counter+1]!='#')
+			}
+			if (read_data[counter+1]!='-'  && read_data[counter+1]!='#'){
+				test=read_data[counter];
+				send_uart(&test);
 				counter+=1;
+			}
+			while (read_data[counter]!='-' && read_data[counter]!='#'){
+				test=read_data[counter];
+				send_uart(&test);
+				counter+=1;
+			}
 			while (counter_width < this->width) {
 				uint8_t a=read_data[counter];
-				if(read_data[counter]=='#')
+				if(read_data[counter]=='#'){
 					setBit(temp, counter_width);
+					send_uart("#");
+				}
+				else
+					send_uart("-");
 				counter_width+=1;
 				counter+=1;
 			}
@@ -110,6 +116,7 @@ void Fonts::createFont(const char* path) {
 		counter_height=0;
 		Font[i] = new Letter(table, height, width);
 	}
+	free(read_data);
 }
 
 uint32_t* Fonts::getLetter(uint8_t letter) {
