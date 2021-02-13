@@ -96,8 +96,8 @@ public:
 	int Init(void);
 	void Fill(Color color);
 	void DrawPixel(uint8_t x, uint8_t y, SSD1306_COLOR color);
-	void WriteChar(char ch, Font Font, Color color, uint8_t coordX,uint8_t coordY);
-	void WriteString(char* str, Font Font, Color color, uint8_t coordX, uint8_t coordY);
+	void WriteChar(char ch,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX,uint8_t coordY);
+	void WriteString(char* str,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX, uint8_t coordY);
 	void SetCursor(uint8_t x, uint8_t y);
 	void process(void);
 	void SPI_Interrupt_DMA();

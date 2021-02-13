@@ -184,13 +184,13 @@ void SSD1306::Fill(Color color) {
 // ch       => char om weg te schrijven
 // Font     => Font waarmee we gaan schrijven
 // color    => BLACK or WHITE
-void SSD1306::WriteChar(char ch, Font Font, Color color, uint8_t coordX,uint8_t coordY) {
-	this->buffer->addLetter((uint8_t)ch, Font, color, coordX, coordY);
+void SSD1306::WriteChar(char ch, uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX,uint8_t coordY) {
+	this->buffer->addLetter((uint8_t)ch, font_width, font_height, color, coordX, coordY);
 }
 
 // Write full string to screenbuffer
-void SSD1306::WriteString(char* str, Font Font, Color color, uint8_t coordX, uint8_t coordY) {
-	this->buffer->addText(str, Font, color, coordX, coordY);
+void SSD1306::WriteString(char* str,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX, uint8_t coordY) {
+	this->buffer->addText(str, font_width, font_height, color, coordX, coordY);
 }
 
 // Position the cursor

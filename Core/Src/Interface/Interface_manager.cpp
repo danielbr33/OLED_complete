@@ -39,24 +39,24 @@ Interface_Element::Button Interface_manager::readKey(){
 void Interface_manager::display(){
 	oled->Fill(White);
     if( Ssd_1306->isNoChangeableErrorCounting() ){
-        oled->WriteString("No change", Font7x10, Black, 2, 2);
-        oled->WriteString("possible", Font7x10, Black, 2, 17);
+        oled->WriteString("No change", 7, 10, Black, 2, 2);
+        oled->WriteString("possible", 7, 10, Black, 2, 17);
     }
     else{
-    	oled->WriteString( (char*)Ssd_1306->getParameterHeadline().c_str(), Font7x10, Black, 2, 2);
+    	oled->WriteString( (char*)Ssd_1306->getParameterHeadline().c_str(), 7, 10, Black, 2, 2);
         if( !(Ssd_1306->isBackFromSubListParameter()) && !(Ssd_1306->hasSubList()) ){
             if( Ssd_1306->isVisibleValue() ){
             	char temp[15];
             	sprintf(temp, "%d", Ssd_1306->getParameterValue());
-        		oled->WriteString( temp, Font7x10, Black, 2, 17);
+        		oled->WriteString( temp, 7, 10, Black, 2, 17);
             }
             else{
                 for( uint16_t i = (Ssd_1306->getParameterValue() )*10 ; i > 0 ; i /= 10)
-                    oled->WriteString(" ", Font7x10, Black, 2, 2);
-                oled->WriteString((char*)Ssd_1306->getParameterUnit().c_str(), Font7x10, Black, 2, 17);
+                    oled->WriteString(" ", 7, 10, Black, 2, 2);
+                oled->WriteString((char*)Ssd_1306->getParameterUnit().c_str(), 7, 10, Black, 2, 17);
             }
         }
     }
-    oled->WriteString("[\]^_abcdefghij", Font7x10, Black, 5, 25);
-    oled->WriteString("ABCDEFGHIJKLMVWXYZ", Font7x10, Black, 5, 36);
+    oled->WriteString("[\]^_abcdefghij", 7, 10, Black, 5, 25);
+    oled->WriteString("ABCDEFGHIJKLMVWXYZ", 7, 10, Black, 5, 36);
 }

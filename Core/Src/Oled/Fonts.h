@@ -3,25 +3,27 @@
 
 #include "Letter.h"
 #include "bitoperations.h"
+#include "ArduinoJson-v6.15.2.h"
 using namespace std;
 
 class Fonts{
 
 public:
+	Fonts(uint8_t width, uint8_t height, uint8_t width_to_see, uint8_t height_to_see);
 	void send_uart (char *string);
-	void createFont6x8();
-	void createFont7x10();
-	void createFont11x18();
+	void createFont(const char* path);
 	uint32_t* getLetter(uint8_t letter);
 	uint8_t getWidth();
 	uint8_t getHeight();
+	uint8_t getWidthSeen();
+	uint8_t getHeightSeen();
 
 private:
-	Letter** Font_6x8;
-	Letter** Font_7x10;
-	Letter** Font_11x18;
+	Letter** Font;
 	uint8_t height;
 	uint8_t width;
+	uint8_t height_to_see;
+	uint8_t width_to_see;
 };
 
 #endif FONTS_H

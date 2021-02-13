@@ -1,0 +1,23 @@
+{
+    "object": "fonts",
+    "fonts": [
+        {
+            "font": "font6x8",
+            "height": 8,
+            "width": 6,
+            "file": "Font6x8.txt"
+        },
+        {
+            "font": "font7x10",
+            "height": 10,
+            "width":7,
+            "file": "Font7x10.txt"
+        },
+        {
+            "font": "font11x18",
+            "height": 18,
+            "width": 11,
+            "file": "Font11x18.txt"
+        }
+    ]
+} 

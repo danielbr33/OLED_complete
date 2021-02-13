@@ -3,6 +3,18 @@
 
 #include "Fonts.h"
 #include "bitoperations.h"
+#include "dma.h"
+#include "fatfs.h"
+#include "sdio.h"
+#include "usart.h"
+#include "gpio.h"
+#include "stdlib.h"
+#include "cstring"
+#include "string.h"
+#include "stdio.h"
+#include "stm32f4xx_hal.h"
+#include <vector>
+#include "stdlib.h"
 
 typedef enum { Font6x8, Font7x10, Font11x18 } Font;
 typedef enum { Black, White } Color;
@@ -15,24 +27,26 @@ public:
 	void print();
 	Buffer(uint8_t buffer_width, uint8_t buffer_height);
 	~Buffer();
-	void addLetter(uint8_t letter, Font, Color color, uint8_t coord_X, uint8_t coord_Y);
-	void addText(char *text, Font, Color color, uint8_t coord_X, uint8_t coord_Y);
-	void createFont(Font font);
+	void addLetter(uint8_t letter, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y);
+	void addText(char *text, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y);
+	void createFont(uint8_t width, uint8_t height);
 	void fill(Color color);
 	uint8_t* getBuffer(uint8_t verse);
+	void send_uart (char *string);
+	uint8_t findFont(uint8_t width, uint8_t height);
 
 private:
 	uint8_t** table;
 	int buffer_width;
 	int buffer_height;
-	Fonts* Font_6x8;
-	Fonts* Font_7x10;
-	Fonts* Font_11x18;
-	Fonts* Actual_Font;
-	uint8_t font6x8_ready;
-	uint8_t font7x10_ready;
-	uint8_t font11x18_ready;
 	uint8_t buffor_element_height;
+	FATFS fs;  // file system
+	FIL fil; // File
+	FRESULT fresult;  // result
+	FILINFO fno;
+	UINT br, bw;  // File read/write count
+	Fonts* ActualFont;
+	vector<Fonts*> FontsAll;
 };
 
 #endif BUFFER_H
