@@ -21,7 +21,7 @@ typedef enum { Black, White } Color;
 #define BUFFOR_PART_HEIGHT 8
 #define BUFFOR_FILLED 255
 
-class Buffer{
+class Buffer{ //Ta Klasa powinn miec inna nazwe np BufferSSD1306, tak aby było wiadomo do czego sie odnosi bo ogólnie w pojekcie buforów moze i pewnie bedzie wiecej
 
 public:
 	void print();

@@ -36,9 +36,12 @@ Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_to_see, uint8_t height
 
 void Fonts::createFont(const char* path) {
 	char* read_data;
-	char name[20];
+	char name[20]; //zamienic liczbe stała, poza tym polecam korzystac z std::string zamiast char* lub char[]
 	uint32_t size;
 
+
+	//To przerzucic do osobnej klasu obsługuje karte SD, zobacz sobie na to repo, to co pisała marta, ja to poprawiłem https://github.com/rvbc1/STM32_Flash_Memory, obecnie jest tylko poprawny zapis tam
+	// w klasie FlashMemoryManager.cpp w funkcji writeDataInMemory przekazywana jest ilosc bajktów i bajkty do zapisu, w klasie kary powinno byc podobnie, tylko jeszcze scieza do polku. Ale ogólnie popatrze na to bo ja to tam juz dosc mocno przekopałem i jest w miare dobrze napisane
 	sprintf(name, path);
 	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
 	if (fresult != FR_OK)
@@ -69,6 +72,7 @@ void Fonts::createFont(const char* path) {
 	if (fresult != FR_OK)
 		send_uart ("ERROR!!! in UNMOUNTING SD CARD\n\n\n");
 
+	//Podzielic to na mniejsze funkcje i poznazywac co robia na tyle na ile to mozliwe tak aby to bylo czytelne a nie jest funkcja od wszystkiego, tak jak w klasie wyzej opsywałem, jest przygotwanie bufforu, wyczyescenie pamieci i zapis na wyczyszczonej pamieci
 	uint16_t counter = 0;
 	uint32_t temp = 0;
 
@@ -78,7 +82,7 @@ void Fonts::createFont(const char* path) {
 	uint8_t counter_width = 0;
 	uint8_t counter_height = 0;
 	char test=0;
-	Font = new Letter* [95];
+	Font = new Letter* [95]; //zmianic liczbe na stała i tego fora na funkcje która wykonuje
 	for (uint8_t i = 0; i < 95; i++) {
 		while (counter_height < this->height){
 			while (read_data[counter]!='-' && read_data[counter]!='#'){
@@ -120,7 +124,7 @@ void Fonts::createFont(const char* path) {
 }
 
 uint32_t* Fonts::getLetter(uint8_t letter) {
-	return Font[letter - 32]->getLetter();
+	return Font[letter - 32]->getLetter(); //OD czego jest to -32?
 }
 
 uint8_t Fonts::getWidth() {
