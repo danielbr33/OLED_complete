@@ -15,6 +15,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "stm32f4xx_hal.h"
+#include "cardSD.h"
 
 FATFS fs;  // file system
 FIL fil; // File
@@ -40,38 +41,7 @@ void Fonts::createFont(const char* path) {
 	uint32_t size;
 
 
-	//To przerzucic do osobnej klasu obsługuje karte SD, zobacz sobie na to repo, to co pisała marta, ja to poprawiłem https://github.com/rvbc1/STM32_Flash_Memory, obecnie jest tylko poprawny zapis tam
-	// w klasie FlashMemoryManager.cpp w funkcji writeDataInMemory przekazywana jest ilosc bajktów i bajkty do zapisu, w klasie kary powinno byc podobnie, tylko jeszcze scieza do polku. Ale ogólnie popatrze na to bo ja to tam juz dosc mocno przekopałem i jest w miare dobrze napisane
-	sprintf(name, path);
-	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
-	if (fresult != FR_OK)
-		send_uart ("ERROR!!! in mounting SD CARD...\n\n");
-	fresult = f_stat (name, &fno);
-	if (fresult != FR_OK)
-		send_uart ("ERRROR!!! file does not exists\n\n");
-	else {
-		fresult = f_open(&fil, name, FA_READ);		/* Open file to read */
-		if (fresult != FR_OK)
-			send_uart ("ERROR!!! File not opened...\n\n");
-		size = f_size(&fil);
-	  	read_data = (char*)malloc(size);
-	  	fresult = f_read (&fil,read_data, size, &br);	  	//Read data from the file
-
-	  	if (fresult != FR_OK) {
-	 		free(read_data);
-	 		send_uart ("ERROR!!! Problem with reading...\n\n");
-		}
-  		else  {
-	  		/* Close file */
-  			fresult = f_close(&fil);
-  			if (fresult != FR_OK)
-  				send_uart ("ERROR!!! not closed...\n\n");
-	  	}
-	}
-	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
-	if (fresult != FR_OK)
-		send_uart ("ERROR!!! in UNMOUNTING SD CARD\n\n\n");
-
+	read_data = cardSD::getInstance().readFile((char*)path);
 	//Podzielic to na mniejsze funkcje i poznazywac co robia na tyle na ile to mozliwe tak aby to bylo czytelne a nie jest funkcja od wszystkiego, tak jak w klasie wyzej opsywałem, jest przygotwanie bufforu, wyczyescenie pamieci i zapis na wyczyszczonej pamieci
 	uint16_t counter = 0;
 	uint32_t temp = 0;

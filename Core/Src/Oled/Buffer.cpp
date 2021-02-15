@@ -1,7 +1,7 @@
 #include "Buffer.h"
 #include "bitoperations.h"
 #include "string.h"
-
+#include "cardSD.h"
 void Buffer::fill(Color color) {
 	for (uint8_t i = 0; i < this->buffer_height / BUFFOR_PART_HEIGHT; i++)
 		for (uint8_t j = 0; j < this->buffer_width; j++) {
