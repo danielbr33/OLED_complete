@@ -18,7 +18,6 @@ C_SRCS += \
 ../Core/Src/usart.c 
 
 CPP_SRCS += \
-../Core/Src/File_Handling.cpp \
 ../Core/Src/freertos.cpp \
 ../Core/Src/main.cpp 
 
@@ -37,7 +36,6 @@ C_DEPS += \
 ./Core/Src/usart.d 
 
 OBJS += \
-./Core/Src/File_Handling.o \
 ./Core/Src/dma.o \
 ./Core/Src/freertos.o \
 ./Core/Src/gpio.o \
@@ -54,14 +52,11 @@ OBJS += \
 ./Core/Src/usart.o 
 
 CPP_DEPS += \
-./Core/Src/File_Handling.d \
 ./Core/Src/freertos.d \
 ./Core/Src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Core/Src/File_Handling.o: ../Core/Src/File_Handling.cpp
-	arm-none-eabi-g++ "$<" -mcpu=cortex-m4 -std=gnu++14 -DUSE_HAL_DRIVER -DSTM32F429xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -Os -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/File_Handling.d" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 Core/Src/dma.o: ../Core/Src/dma.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F429xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/dma.d" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 Core/Src/freertos.o: ../Core/Src/freertos.cpp

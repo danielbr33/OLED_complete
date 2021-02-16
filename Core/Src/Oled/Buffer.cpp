@@ -40,6 +40,12 @@ Buffer::~Buffer(){
 }
 
 void Buffer::addLetter(uint8_t letter, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	if(ActualFont == nullptr){
+		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
+			createFont(width, height);
+			findFont(width, height);
+		}
+	}
 	if(ActualFont->getWidth()!=width || ActualFont->getHeight()!=height)
 		if(findFont(width, height) == false){
 			createFont(width, height);
@@ -94,6 +100,13 @@ void Buffer::addLetter(uint8_t letter, uint8_t width, uint8_t height, Color colo
 }
 
 void Buffer::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	if(ActualFont == nullptr){
+		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
+			createFont(width, height);
+			findFont(width, height);
+		}
+	}
+
 	if(ActualFont->getWidth()!=width || ActualFont->getHeight()!=height)
 		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
 			createFont(width, height);
@@ -106,60 +119,12 @@ void Buffer::addText(char* text,  uint8_t width, uint8_t height, Color color, ui
 }
 
 void Buffer::createFont(uint8_t width, uint8_t height) {
-	const char* path = 0;
-	char* read_data;
-	char name[20];
-	uint32_t size;
-
-	sprintf(name, "doc.json");
-	fresult = f_mount(&fs, (const TCHAR*)"/", 1);
-	if (fresult != FR_OK)
-		send_uart ("ERROR!!! in mounting SD CARD...\n\n");
-	fresult = f_stat (name, &fno);
-	if (fresult != FR_OK)
-		send_uart ("ERRROR!!! file does not exists\n\n");
-	else {
-		fresult = f_open(&fil, name, FA_READ);		/* Open file to read */
-		if (fresult != FR_OK)
-			send_uart ("ERROR!!! File not opened...\n\n");
-		size = f_size(&fil);
-	  	read_data = (char*)malloc(size);
-	  	fresult = f_read (&fil,read_data, size, &br);	  	//Read data from the file
-	  	send_uart(read_data);
-	  	if (fresult != FR_OK) {
-	 		free(read_data);
-	 		send_uart ("ERROR!!! Problem with reading...\n\n");
-		}
-  		else  {
-	  		/* Close file */
-  			fresult = f_close(&fil);
-  			if (fresult != FR_OK)
-  				send_uart ("ERROR!!! not closed...\n\n");
-	  		else
-	  			send_uart ("ERROR!!! closed succesfully...\n\n");
-	  	}
-	}
-	fresult = f_mount(NULL, (const TCHAR*)"/", 1);
-	if (fresult == FR_OK) send_uart ("SD CARD UNMOUNTED successfully...\n\n\n");
-	else send_uart("ERROR!!! in UNMOUNTING SD CARD\n\n\n");;
-
-	const uint8_t capacity = JSON_OBJECT_SIZE(3);
-	DynamicJsonDocument doc(1024);
-	DeserializationError error = deserializeJson(doc, read_data);
-	if (error)
-		send_uart("error in json");
-	JsonArray array = doc["fonts"];
+	char* path;
 	uint8_t width_to_see;
 	uint8_t height_to_see;
-	uint8_t difference = ~0;
-	for (JsonObject repo : array) {
-		if( (abs(width - repo["width"].as<uint8_t>()) + abs(height - repo["height"].as<uint8_t>())) < difference ){ //kod powinien byc bezpieczny jak korzystasz z jsona to sprawdz czy posida dane pole np repo.containsKey("width")
-			path = repo["file"].as<const char*>();
-			width_to_see = repo["width"];
-			height_to_see = repo["height"];
-			difference = abs(width - repo["width"].as<uint8_t>()) + abs(height - repo["height"].as<uint8_t>());
-		}
-	}
+	path = JsonFonts::getInstance().getPath(width,  height);
+	width_to_see = JsonFonts::getInstance().getWidth(width,  height);
+	height_to_see = JsonFonts::getInstance().getHeight(width,  height);
 	ActualFont = new Fonts(width, height, width_to_see, height_to_see); //obiekty mała listera
 	ActualFont->createFont(path);
 	FontsAll.push_back(new Fonts(*ActualFont));

@@ -43,7 +43,9 @@ public:
 		static cardSD instance;
 		return instance;
 	}
-	char* readFile(char* path);
+	char* readFile(char* path, char* read_data);
+	uint16_t getSizeOfFile(char* path);
+
 };
 
 #endif /* SRC_FILEMANAGER_CARDSD_H_ */

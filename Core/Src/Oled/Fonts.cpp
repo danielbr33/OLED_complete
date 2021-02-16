@@ -40,8 +40,9 @@ void Fonts::createFont(const char* path) {
 	char name[20]; //zamienic liczbe stała, poza tym polecam korzystac z std::string zamiast char* lub char[]
 	uint32_t size;
 
-
-	read_data = cardSD::getInstance().readFile((char*)path);
+	size = cardSD::getInstance().getSizeOfFile((char*)path);
+	read_data = new char[size];
+	read_data = cardSD::getInstance().readFile((char*)path, read_data);
 	//Podzielic to na mniejsze funkcje i poznazywac co robia na tyle na ile to mozliwe tak aby to bylo czytelne a nie jest funkcja od wszystkiego, tak jak w klasie wyzej opsywałem, jest przygotwanie bufforu, wyczyescenie pamieci i zapis na wyczyszczonej pamieci
 	uint16_t counter = 0;
 	uint32_t temp = 0;

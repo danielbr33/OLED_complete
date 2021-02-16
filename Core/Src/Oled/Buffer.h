@@ -15,6 +15,7 @@
 #include "stm32f4xx_hal.h"
 #include <vector>
 #include "stdlib.h"
+#include "JsonFonts.h"
 
 typedef enum { Font6x8, Font7x10, Font11x18 } Font;
 typedef enum { Black, White } Color;
