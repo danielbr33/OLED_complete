@@ -19,7 +19,7 @@ private:
 		std::string font;
 		uint8_t height;
 		uint8_t width;
-		char* path;
+		string path;
 	};
 	FontsSettings actualSettings;
 	vector<FontsSettings> fontsSettings;
@@ -29,7 +29,7 @@ public:
 		return instance;
 	}
 	void findFontToCreate(uint8_t width, uint8_t height);
-	char* getPath(uint8_t width, uint8_t height);
+	string getPath(uint8_t width, uint8_t height);
 	uint8_t getWidth(uint8_t width, uint8_t height);
 	uint8_t getHeight(uint8_t width, uint8_t height);
 };

@@ -195,6 +195,7 @@ void StartInterfaceTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+	uint64_t temp = xPortGetFreeHeapSize();
 	Interface2->interrupt();
     osDelay(50);
   }

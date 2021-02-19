@@ -119,10 +119,11 @@ void Buffer::addText(char* text,  uint8_t width, uint8_t height, Color color, ui
 }
 
 void Buffer::createFont(uint8_t width, uint8_t height) {
+	uint64_t temp = xPortGetFreeHeapSize();
 	char* path;
 	uint8_t width_to_see;
 	uint8_t height_to_see;
-	path = JsonFonts::getInstance().getPath(width,  height);
+	path = (char*)((JsonFonts::getInstance().getPath(width,  height)).c_str());
 	width_to_see = JsonFonts::getInstance().getWidth(width,  height);
 	height_to_see = JsonFonts::getInstance().getHeight(width,  height);
 	ActualFont = new Fonts(width, height, width_to_see, height_to_see); //obiekty mała listera

@@ -19,18 +19,14 @@ JsonFonts::JsonFonts() {
 	DeserializationError error = deserializeJson(doc, read_data);
 	JsonArray array = doc["fonts"];
 	for (JsonObject repo : array) {
-	//	if( (abs(width - repo["width"].as<uint8_t>()) + abs(height - repo["height"].as<uint8_t>())) < difference ){ //kod powinien byc bezpieczny jak korzystasz z jsona to sprawdz czy posida dane pole np repo.containsKey("width")
+//	//	if( (abs(width - repo["width"].as<uint8_t>()) + abs(height - repo["height"].as<uint8_t>())) < difference ){ //kod powinien byc bezpieczny jak korzystasz z jsona to sprawdz czy posida dane pole np repo.containsKey("width")
 		path = (char*)repo["file"].as<const char*>();
 		actualSettings.font = repo["font"].as<string>();
 		actualSettings.width = repo["width"].as<uint8_t>();
 		actualSettings.height = repo["height"].as<uint8_t>();
-		std::string temp = repo["file"].as<std::string>();
-		uint8_t temp2 = temp.length();
-		actualSettings.path = new char[temp2];
-		actualSettings.path = (char*)repo["file"].as<const char*>();
+		actualSettings.path = repo["file"].as<string>();
+		uint64_t temp3 = xPortGetFreeHeapSize();
 		fontsSettings.push_back(actualSettings);
-		delete actualSettings.path;
-	//	difference = abs(width - repo["width"].as<uint8_t>()) + abs(height - repo["height"].as<uint8_t>());
 	}
 }
 
@@ -46,7 +42,7 @@ void JsonFonts::findFontToCreate(uint8_t width, uint8_t height){
 	}
 }
 
-char* JsonFonts::getPath(uint8_t width, uint8_t height){
+string JsonFonts::getPath(uint8_t width, uint8_t height){
 	findFontToCreate(width, height);
 	return actualSettings.path;
 }
