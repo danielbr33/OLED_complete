@@ -14,7 +14,7 @@
 class JsonFonts {
 private:
 	JsonFonts();
-	virtual ~JsonFonts();
+
 	struct FontsSettings{
 		std::string font;
 		uint8_t height;
@@ -23,11 +23,16 @@ private:
 	};
 	FontsSettings actualSettings;
 	vector<FontsSettings> fontsSettings;
+
 public:
+	JsonFonts(JsonFonts const&) = delete;
+	void operator=(JsonFonts const&) = delete;
+	virtual ~JsonFonts();
 	static JsonFonts& getInstance(){
 		static JsonFonts instance;
 		return instance;
 	}
+
 	void findFontToCreate(uint8_t width, uint8_t height);
 	string getPath(uint8_t width, uint8_t height);
 	uint8_t getWidth(uint8_t width, uint8_t height);
