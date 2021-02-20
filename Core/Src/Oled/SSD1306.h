@@ -11,8 +11,7 @@
 #ifndef __SSD1306_H__
 #define __SSD1306_H__
 
-
-#include "Buffer.h"
+#include <BufferSSD1306.h>
 
 //To nie wiem czy ty robiles ale tez ładnie zrobione, ze gdyby ktos chciał skompilowac na innym procku dostanie info ze moze nie działać w pełni i sam musi przetestować, lekko bym to zmodyfikował ale opowiem o tym na nastepynm spotkaniu
 #define STM32F4
@@ -33,6 +32,9 @@
 #else
  #error "SSD1306 library was tested only on STM32F1, STM32F3, STM32F4, STM32F7, STM32L0, STM32L4, STM32H7 MCU families. Please modify ssd1306.h if you know what you are doing. Also please send a pull request if it turns out the library works on other MCU's as well!"
 #endif
+
+#define NUMBER_OF_COMMANDS_INIT  28
+#define NUMBER_OF_COMMANDS_DATA	3
 
 class SSD1306 {
 public:
@@ -57,18 +59,19 @@ public:
 
 	SSD1306(OledSettingsSPI oledSettingsSPI);
 	SSD1306(OledSettingsI2C oledSettingsI2C);
-
 	SSD1306(I2C_HandleTypeDef* hi2c, int I2C_ADDRESS); //rozwazycz czy nie usunac tych konstruktorów, lub dac jak prywatne, tak aby permetry były przekazywane tylko przez OledSettingsI2C
 	SSD1306(SPI_HandleTypeDef* hspi, gpio_struct reset, gpio_struct DC, gpio_struct CS); //jw
 	virtual ~SSD1306();
+
 	// Procedure definitions
 	void init(void);
-	void fillBuffer(Color color);
-	void writeChar(char ch,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX,uint8_t coordY);
-	void writeString(char* str,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX, uint8_t coordY);
+	void fillBuffer(BufferSSD1306::Color color);
+	void writeChar(char ch,  uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX,uint8_t coordY);
+	void writeString(char* str,  uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY);
 	void setCursor(uint8_t x, uint8_t y);
 	void oledInterruptDMA(); //put in oled SPI interrupt or in freertos
 	void sendScreen(); //polling mode
+
 	// Low-level procedures
 	void reset(void);
 	void changeDMA(State dma);
@@ -105,9 +108,9 @@ private:
     uint8_t inverted;
     uint8_t initialized;
     uint8_t status;
-    uint8_t initCommands[28]; //te liczy tez zmainic stałymi np #define
-    uint8_t lineCommands[3];
-    Buffer *buffer;
+    uint8_t initCommands[NUMBER_OF_COMMANDS_INIT]; //te liczy tez zmainic stałymi np #define
+    uint8_t lineCommands[NUMBER_OF_COMMANDS_DATA];
+    BufferSSD1306 *buffer;
     uint8_t* SSD1306_Buffer;
     uint8_t counter;
 };
@@ -145,8 +148,7 @@ private:
 #define VOLTAGE_77	0x20	//0x20,0.77xVcc
 #define SET_DC_ENABLE	0x8D
 #define DC_ENABLE	0x14
-#define SSD1306_WIDTH	128
-#define SSD1306_HEIGHT  64
+
 
 #endif /* APPLICATION_USER_SSD1306_H_ */
 #endif // __SSD1306_H__

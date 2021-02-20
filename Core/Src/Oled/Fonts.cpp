@@ -95,7 +95,7 @@ void Fonts::createFont(const char* path) {
 }
 
 uint32_t* Fonts::getLetter(uint8_t letter) {
-	return Font[letter - 32]->getLetter(); //OD czego jest to -32?
+	return Font[letter - " "]->getLetter();
 }
 
 uint8_t Fonts::getWidth() {

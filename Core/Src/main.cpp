@@ -138,11 +138,9 @@ int main(void)
 	/* USER CODE BEGIN 2 */
 	oled->changeDMA(SSD1306::SET_ON);
 	oled->init();
-	oled->fillBuffer(Black);
 	HAL_Delay(5);
 	oled2->changeDMA(SSD1306::SET_ON);
 	oled2->init();
-	oled2->fillBuffer(Black);
 	HAL_Delay(1000);
 	uint8_t i=0;
 
