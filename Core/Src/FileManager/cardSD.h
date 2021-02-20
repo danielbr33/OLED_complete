@@ -29,9 +29,7 @@
 
 class cardSD {
 private:
-	cardSD() {}
-	cardSD(const cardSD &);
-	~cardSD(){}
+	cardSD() = default;
 	FATFS fs;  // file system
 	FIL fil; // File
 	FRESULT fresult;  // result
@@ -39,6 +37,9 @@ private:
 	UINT br, bw;  // File read/write count
 
 public:
+	cardSD(cardSD const&) = delete;
+	void operator=(cardSD const&) = delete;
+	~cardSD(){}
 	static cardSD& getInstance(){
 		static cardSD instance;
 		return instance;
