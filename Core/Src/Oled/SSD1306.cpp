@@ -8,27 +8,27 @@
 #include "SSD1306.h"
 
 
-void SSD1306::Reset(void) {
+void SSD1306::reset(void) {
 	// CS = High (not selected)
-	if(i2c_or_spi==SPI){
-		HAL_GPIO_WritePin(CS_Port, CS_Pin, GPIO_PIN_SET);
+	if(connectionOled==SPI){
+		HAL_GPIO_WritePin(CsPort, CsPin, GPIO_PIN_SET);
 
 		// Reset the OLED
-		HAL_GPIO_WritePin(RESET_Port, RESET_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(ResetPort, ResetPin, GPIO_PIN_RESET);
 		HAL_Delay(10);
-		HAL_GPIO_WritePin(RESET_Port, RESET_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ResetPort, ResetPin, GPIO_PIN_SET);
 		HAL_Delay(10);
 	}
 }
 // Send a byte to the command register
-void SSD1306::WriteCommand() {
-	if (i2c_or_spi==SPI){
-		HAL_GPIO_WritePin(CS_Port, CS_Pin, GPIO_PIN_RESET); // select OLED
-		HAL_GPIO_WritePin(DC_Port, DC_Pin, GPIO_PIN_RESET); // command
+void SSD1306::writeCommand() {
+	if (connectionOled==SPI){
+		HAL_GPIO_WritePin(CsPort, CsPin, GPIO_PIN_RESET); // select OLED
+		HAL_GPIO_WritePin(DcPort, DcPin, GPIO_PIN_RESET); // command
 		if (dma_status==SET_ON)
-			HAL_SPI_Transmit_DMA(SPI_Port, lineCommands, 3);
+			HAL_SPI_Transmit_DMA(SpiPort, lineCommands, 3);
 		else
-			HAL_SPI_Transmit(SPI_Port, lineCommands, 3, HAL_MAX_DELAY);
+			HAL_SPI_Transmit(SpiPort, lineCommands, 3, HAL_MAX_DELAY);
 	}
 	else {
 		if (dma_status==SET_ON)
@@ -38,15 +38,15 @@ void SSD1306::WriteCommand() {
 	}
 }
 // Send data
-void SSD1306::WriteData() {
-	if (i2c_or_spi == SPI){
-		HAL_GPIO_WritePin(CS_Port, CS_Pin, GPIO_PIN_RESET); // select OLED
-		HAL_GPIO_WritePin(DC_Port, DC_Pin, GPIO_PIN_SET); // data
+void SSD1306::writeData() {
+	if (connectionOled == SPI){
+		HAL_GPIO_WritePin(CsPort, CsPin, GPIO_PIN_RESET); // select OLED
+		HAL_GPIO_WritePin(DcPort, DcPin, GPIO_PIN_SET); // data
 		if (dma_status == SET_ON){
-			HAL_SPI_Transmit_DMA(SPI_Port, this->buffer->getBuffer(counter), width);
+			HAL_SPI_Transmit_DMA(SpiPort, this->buffer->getBuffer(counter), width);
 		}
 		else
-			HAL_SPI_Transmit(SPI_Port, this->buffer->getBuffer(counter), width, HAL_MAX_DELAY);
+			HAL_SPI_Transmit(SpiPort, this->buffer->getBuffer(counter), width, HAL_MAX_DELAY);
 	}
 	else{
 		if (dma_status == SET_ON)
@@ -57,7 +57,7 @@ void SSD1306::WriteData() {
 }
 
 
-void SSD1306::SPI_Interrupt_DMA(){
+void SSD1306::oledInterruptDMA(){
 
 	//if (dma_status == 1){
 	if (status==2);
@@ -67,20 +67,20 @@ void SSD1306::SPI_Interrupt_DMA(){
 		lineCommands[1]=LOW_COLUMN_ADDR;
 		lineCommands[2]=HIGH_COLUMN_ADDR;
 		status=1;
-		WriteCommand();
+		writeCommand();
 	}
 	else{
 		status=0;
 		if (counter==8)
 			counter=0;
-		WriteData();
+		writeData();
 	}
 	//}
 }
 
-int SSD1306::Init(void) {
+void SSD1306::init(void) {
 	// Reset OLED
-	Reset();
+	reset();
 	// Wait for the screen to boot
 	HAL_Delay(100);
 
@@ -150,14 +150,14 @@ int SSD1306::Init(void) {
 	currentY = 0;
 	initialized = 1;
 
-	Fill(White);
-	if (i2c_or_spi == SPI){
+	fillBuffer(White);
+	if (connectionOled == SPI){
 		if (dma_status==SET_ON)
-			HAL_SPI_Transmit_DMA(SPI_Port, initCommands, 28);
+			HAL_SPI_Transmit_DMA(SpiPort, initCommands, 28);
 		else
-			HAL_SPI_Transmit(SPI_Port, initCommands, 28, HAL_MAX_DELAY);
+			HAL_SPI_Transmit(SpiPort, initCommands, 28, HAL_MAX_DELAY);
 		status=0;
-		SPI_Interrupt_DMA();
+		oledInterruptDMA();
 	}
 	else{
 		if (dma_status==SET_ON)
@@ -169,32 +169,29 @@ int SSD1306::Init(void) {
 	}
 }
 
-void SSD1306::process(){
-	//components to display
-	HAL_Delay(5);
-}
-
 // Fill the whole screen with the given color
-void SSD1306::Fill(Color color) {
+void SSD1306::fillBuffer(Color color) {
 	/* Set memory */
 	this->buffer->fill(color);
 }
 
 // Draw 1 char to the screen buffer
-// ch       => char om weg te schrijven
-// Font     => Font waarmee we gaan schrijven
 // color    => BLACK or WHITE
-void SSD1306::WriteChar(char ch, uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX,uint8_t coordY) {
+void SSD1306::writeChar(char ch, uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX,uint8_t coordY) {
 	this->buffer->addLetter((uint8_t)ch, font_width, font_height, color, coordX, coordY);
 }
 
 // Write full string to screenbuffer
-void SSD1306::WriteString(char* str,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX, uint8_t coordY) {
+void SSD1306::writeString(char* str,  uint8_t font_width, uint8_t font_height, Color color, uint8_t coordX, uint8_t coordY) {
 	this->buffer->addText(str, font_width, font_height, color, coordX, coordY);
 }
 
 // Position the cursor
-void SSD1306::SetCursor(uint8_t x, uint8_t y) {
+void SSD1306::setCursor(uint8_t x, uint8_t y) {
+	if (x > SSD1306_WIDTH)
+		x = SSD1306_WIDTH;
+	if (y > SSD1306_HEIGHT)
+		y = SSD1306_HEIGHT;
 	currentX = x;
 	currentY = y;
 }
@@ -211,8 +208,8 @@ SSD1306::SSD1306(OledSettingsI2C oledSettingsI2C){
 	this->inversion_color_status = SET_OFF;
 	this->height=64;
 	this->width=128;
-	AllocBuffer();
-	i2c_or_spi=I2C;
+	allocBuffer();
+	connectionOled=I2C;
 	counter=7;
 	buffer = new Buffer (this->width, this->height);
 }
@@ -226,20 +223,20 @@ SSD1306::SSD1306(I2C_HandleTypeDef* i2c, int I2C_ADDRESS){
 	this->inversion_color_status = SET_OFF;
 	this->height=64;
 	this->width=128;
-	AllocBuffer();
-	i2c_or_spi=I2C;
+	allocBuffer();
+	connectionOled=I2C;
 	counter=7;
 	buffer = new Buffer (this->width, this->height);
 }
 
 SSD1306::SSD1306(OledSettingsSPI oledSettingsSPI){
-	this->SPI_Port = oledSettingsSPI.hspi;
-	this->RESET_Port = oledSettingsSPI.reset.port;
-	this->RESET_Pin = oledSettingsSPI.reset.pin;
-	this->CS_Port = oledSettingsSPI.cs.port;
-	this->CS_Pin = oledSettingsSPI.cs.pin;
-	this->DC_Port = oledSettingsSPI.dc.port;
-	this->DC_Pin = oledSettingsSPI.dc.pin;
+	this->SpiPort = oledSettingsSPI.hspi;
+	this->ResetPort = oledSettingsSPI.reset.port;
+	this->ResetPin = oledSettingsSPI.reset.pin;
+	this->CsPort = oledSettingsSPI.cs.port;
+	this->CsPin = oledSettingsSPI.cs.pin;
+	this->DcPort = oledSettingsSPI.dc.port;
+	this->DcPin = oledSettingsSPI.dc.pin;
 
 
 	//To poniez to chyba do funkcji init, bo nie jest zwiazne a konstruktorzem
@@ -249,29 +246,29 @@ SSD1306::SSD1306(OledSettingsSPI oledSettingsSPI){
 	this->inversion_color_status = SET_OFF;
 	this->height=64;
 	this->width=128;
-	AllocBuffer();
-	i2c_or_spi=SPI;
+	allocBuffer();
+	connectionOled=SPI;
 	counter=7;
 	buffer = new Buffer (this->width, this->height);
 }
 
 SSD1306::SSD1306(SPI_HandleTypeDef* hspi, gpio_struct reset, gpio_struct DC,
 		gpio_struct CS) {
-	this->SPI_Port = hspi;
-	this->RESET_Port = reset.port;
-	this->RESET_Pin = reset.pin;
-	this->CS_Port = CS.port;
-	this->CS_Pin = CS.pin;
-	this->DC_Port = DC.port;
-	this->DC_Pin = DC.pin;
+	this->SpiPort = hspi;
+	this->ResetPort = reset.port;
+	this->ResetPin = reset.pin;
+	this->CsPort = CS.port;
+	this->CsPin = CS.pin;
+	this->DcPort = DC.port;
+	this->DcPin = DC.pin;
 	this->dma_status=SET_OFF;
 	this->mirror_vertical_status = SET_OFF;
 	this->mirror_horizontal_status = SET_OFF;
 	this->inversion_color_status = SET_OFF;
 	this->height=64;
 	this->width=128;
-	AllocBuffer();
-	i2c_or_spi=SPI;
+	allocBuffer();
+	connectionOled=SPI;
 	counter=7;
 	buffer = new Buffer (this->width, this->height);
 }
@@ -280,30 +277,30 @@ SSD1306::~SSD1306() {
 	// TODO Auto-generated destructor stub
 }
 
-void SSD1306::ChangeDMA(state dma){
+void SSD1306::changeDMA(State dma){
 	dma_status=dma;
 }
 
-void SSD1306::ChangeMirrorHorizontal(state mirror){
+void SSD1306::changeMirrorHorizontal(State mirror){
 	mirror_horizontal_status = mirror;
 }
 
-void SSD1306::ChangeMirrorVertical(state mirror){
+void SSD1306::changeMirrorVertical(State mirror){
 	mirror_vertical_status = mirror;
 }
 
-void SSD1306::AllocBuffer(){
+void SSD1306::allocBuffer(){
 	this->SSD1306_Buffer=new uint8_t[width * height /8];
 }
 
-void SSD1306::ChangeInversionColor(state inversion){
+void SSD1306::changeInversionColor(State inversion){
 	inversion_color_status = inversion;
 }
 
-void SSD1306::ChangeHeight(uint8_t height){
+void SSD1306::changeHeight(uint8_t height){
 	this->height=height;
 }
 
-void SSD1306::ChangeWidth(uint8_t width){
+void SSD1306::changeWidth(uint8_t width){
 	this->width=width;
 }

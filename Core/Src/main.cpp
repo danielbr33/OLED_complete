@@ -136,13 +136,13 @@ int main(void)
 	MX_I2C1_Init();
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
-	oled->ChangeDMA(SET_ON);
-	oled->Init();
-	oled->Fill(Black);
+	oled->changeDMA(SSD1306::SET_ON);
+	oled->init();
+	oled->fillBuffer(Black);
 	HAL_Delay(5);
-	oled2->ChangeDMA(SET_ON);
-	oled2->Init();
-	oled2->Fill(Black);
+	oled2->changeDMA(SSD1306::SET_ON);
+	oled2->init();
+	oled2->fillBuffer(Black);
 	HAL_Delay(1000);
 	uint8_t i=0;
 

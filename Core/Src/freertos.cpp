@@ -26,18 +26,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "dma.h"
-#include "fatfs.h"
-#include "sdio.h"
-#include "usart.h"
-#include "gpio.h"
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
-#include "stdlib.h"
-#include "cstring"
-#include "string.h"
-#include "stdio.h"
-#include "stm32f4xx_hal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,10 +60,6 @@ osThreadId interfaceTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-void send_uart (char *string)
-{
-	HAL_UART_Transmit(&huart3, (uint8_t *)string, strlen (string), HAL_MAX_DELAY);  //TODO change uart
-}
 
 /* USER CODE END FunctionPrototypes */
 
@@ -175,8 +161,8 @@ void StartOledTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	oled->SPI_Interrupt_DMA();
-	oled2->SPI_Interrupt_DMA();
+	oled->oledInterruptDMA();
+	oled2->oledInterruptDMA();
 	osDelay(50);
   }
   /* USER CODE END StartOledTask */
@@ -195,7 +181,6 @@ void StartInterfaceTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	uint64_t temp = xPortGetFreeHeapSize();
 	Interface2->interrupt();
     osDelay(50);
   }
