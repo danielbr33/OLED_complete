@@ -100,7 +100,7 @@ void Buffer::addLetter(uint8_t letter, uint8_t width, uint8_t height, Color colo
 }
 
 void Buffer::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
-	if(ActualFont == nullptr){
+	if(ActualFont == nullptr ){
 		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
 			createFont(width, height);
 			findFont(width, height);
@@ -123,9 +123,9 @@ void Buffer::createFont(uint8_t width, uint8_t height) {
 	char* path;
 	uint8_t width_to_see;
 	uint8_t height_to_see;
-	path = (char*)((JsonFonts::getInstance().getPath(width,  height)).c_str());
-	width_to_see = JsonFonts::getInstance().getWidth(width,  height);
-	height_to_see = JsonFonts::getInstance().getHeight(width,  height);
+	path = (char*)((FontsJsonManager::getInstance().getPath(width,  height)).c_str());
+	width_to_see = FontsJsonManager::getInstance().getWidth(width,  height);
+	height_to_see = FontsJsonManager::getInstance().getHeight(width,  height);
 	ActualFont = new Fonts(width, height, width_to_see, height_to_see); //obiekty mała listera
 	ActualFont->createFont(path);
 	FontsAll.push_back(new Fonts(*ActualFont));

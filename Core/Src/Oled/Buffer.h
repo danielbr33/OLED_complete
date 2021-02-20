@@ -1,6 +1,7 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
+#include <JsonManager.h>
 #include "Fonts.h"
 #include "bitoperations.h"
 #include "dma.h"
@@ -15,7 +16,7 @@
 #include "stm32f4xx_hal.h"
 #include <vector>
 #include "stdlib.h"
-#include "JsonFonts.h"
+#include "FontsJsonManager.h"
 
 typedef enum { Font6x8, Font7x10, Font11x18 } Font;
 typedef enum { Black, White } Color;
