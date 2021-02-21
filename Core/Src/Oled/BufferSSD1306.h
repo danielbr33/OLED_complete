@@ -1,5 +1,5 @@
-#ifndef BUFFER_H
-#define BUFFER_H
+#ifndef BUFFERSSD1306_H
+#define BUFFERSSD1306_H
 
 #include "Fonts.h"
 #include <vector>
@@ -33,5 +33,5 @@ private:
 	vector<Fonts*> FontsAll;
 };
 
-#endif BUFFER_H
+#endif BUFFERSSD1306_H
 

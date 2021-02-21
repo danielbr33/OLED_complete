@@ -3,7 +3,8 @@
 
 #include "Letter.h"
 #include "bitoperations.h"
-#include "ArduinoJson-v6.15.2.h"
+#include "cardSD.h"
+
 using namespace std;
 
 class Fonts{
