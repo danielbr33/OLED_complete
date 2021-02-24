@@ -1,12 +1,14 @@
-/*
- * SSD1306.h
- *
- *  Created on: 22.03.2020
- *      Author: danie
- */
+/* Created on: 22.02.2021
+   Author: daniel   */
 
-#ifndef APPLICATION_USER_SSD1306_H_
-#define APPLICATION_USER_SSD1306_H_
+
+/*******************************README*******************************/
+/*OLED is divided to 8 parts, each included 8pixels vertically, to write data it's needed to send two commands informonig about sending data
+ * and one command which means a number of sector. In this code it's written by counting to 8 (variable counter) and sending data from buffer
+ * Library support sending using both I2C and SPI, and in DMA and polling mode, but only I2C was tested
+ * You need to create an object depending on that, which communication standard you want to use, DMA is turned off by default,
+ * you can use it by setting variable DMA_status using suitable function.
+ * Another configuration of init commands not tested*/
 
 #ifndef __SSD1306_H__
 #define __SSD1306_H__
@@ -59,8 +61,6 @@ public:
 
 	SSD1306(OledSettingsSPI oledSettingsSPI);
 	SSD1306(OledSettingsI2C oledSettingsI2C);
-	SSD1306(I2C_HandleTypeDef* hi2c, int I2C_ADDRESS); //rozwazycz czy nie usunac tych konstruktorów, lub dac jak prywatne, tak aby permetry były przekazywane tylko przez OledSettingsI2C
-	SSD1306(SPI_HandleTypeDef* hspi, gpio_struct reset, gpio_struct DC, gpio_struct CS); //jw
 	virtual ~SSD1306();
 
 	// Procedure definitions
@@ -107,12 +107,12 @@ private:
     uint16_t currentY;
     uint8_t inverted;
     uint8_t initialized;
-    uint8_t status;
-    uint8_t initCommands[NUMBER_OF_COMMANDS_INIT]; //te liczy tez zmainic stałymi np #define
+    uint8_t status;   // 0 mean ready data to send
+    uint8_t initCommands[NUMBER_OF_COMMANDS_INIT];
     uint8_t lineCommands[NUMBER_OF_COMMANDS_DATA];
     BufferSSD1306 *buffer;
     uint8_t* SSD1306_Buffer;
-    uint8_t counter;
+    uint8_t counter;  //Readme on the top
 };
 
 #define TURN_OFF	0xAE
@@ -149,6 +149,4 @@ private:
 #define SET_DC_ENABLE	0x8D
 #define DC_ENABLE	0x14
 
-
-#endif /* APPLICATION_USER_SSD1306_H_ */
-#endif // __SSD1306_H__
+#endif

@@ -1,10 +1,5 @@
-/*
- * bitoperations.h
- *
- *  Created on: 03.01.2019
- *      Author: rvbc-
- */
-
+/* Created on: 22.02.2021
+   Author: daniel   */
 
 #ifndef BITOPERATIONS_H
 #define BITOPERATIONS_H

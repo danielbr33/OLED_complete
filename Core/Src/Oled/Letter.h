@@ -1,8 +1,13 @@
+/* Created on: 22.02.2021
+   Author: daniel   */
+/***************README******************/
+/* Record of the letter as horizontal table of the vertical lines of the letter*/
+
 #ifndef LETTER_H
 #define LETTER_H
 
-#include "stdint.h"
 #include "bitoperations.h"
+
 #define MAX_WIDTH 16
 
 class Letter{
@@ -20,5 +25,5 @@ private:
 	uint32_t* letter_tab;
 };
 
-#endif LETTER_H
+#endif
 

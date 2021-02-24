@@ -1,7 +1,5 @@
 #include <BufferSSD1306.h>
-#include "bitoperations.h"
-#include "string.h"
-#include "cardSD.h"
+
 void BufferSSD1306::fill(Color color) {
 	for (uint8_t i = 0; i < this->buffer_height / BUFFOR_PART_HEIGHT; i++)
 		for (uint8_t j = 0; j < this->buffer_width; j++) {
@@ -13,8 +11,8 @@ void BufferSSD1306::fill(Color color) {
 }
 
 
-uint8_t* BufferSSD1306::getBuffer(uint8_t verse){
-	return this->table[verse];
+uint8_t* BufferSSD1306::getBuffer(uint8_t sector){
+	return this->table[sector];
 }
 
 

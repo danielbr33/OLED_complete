@@ -101,11 +101,13 @@ int main(void)
 
 	oledSpiSettings.hspi = &hspi1;
 
+	SSD1306::OledSettingsI2C i2c_settings;
+	i2c_settings.address = 0x3C<<1;
+	i2c_settings.hi2c = &hi2c1;
 
 
-
-	oled = new SSD1306(&hspi1, gpio_reset, gpio_dc, gpio_cs);
-	oled2 = new SSD1306(&hi2c1, 0x3C<<1);
+	oled = new SSD1306(oledSpiSettings);
+	oled2 = new SSD1306(i2c_settings);
 
 	Interface1=new Interface_manager(&huart3, oled);
 	Interface2=new Interface_manager(&huart3, oled2);

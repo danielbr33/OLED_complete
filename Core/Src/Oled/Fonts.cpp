@@ -7,34 +7,38 @@ Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_to_see, uint8_t height
 	this->height_to_see = height_to_see;
 }
 
+
 void Fonts::createFont(const char* path) {
 	char* read_data;
 	uint32_t size;
-
 	size = cardSD::getInstance().getSizeOfFile((char*)path);
 	read_data = new char[size];
 	read_data = cardSD::getInstance().readFile((char*)path, read_data);
-	//Podzielic to na mniejsze funkcje i poznazywac co robia na tyle na ile to mozliwe tak aby to bylo czytelne a nie jest funkcja od wszystkiego, tak jak w klasie wyzej opsywałem, jest przygotwanie bufforu, wyczyescenie pamieci i zapis na wyczyszczonej pamieci
+	createObjects(read_data);
+	delete(read_data);
+}
+
+void Fonts::createObjects(char* data){
 	uint16_t counter = 0;
 	uint32_t temp = 0;
-
 	uint32_t table[this->height];
 	uint8_t counter_width = 0;
 	uint8_t counter_height = 0;
-	Font = new Letter* [95]; //zmianic liczbe na stała i tego fora na funkcje która wykonuje
-	for (uint8_t i = 0; i < 95; i++) {
+
+	Font = new Letter* [NUMBER_OF_LETTERS];
+	for (uint8_t i = 0; i < NUMBER_OF_LETTERS; i++) {
 		while (counter_height < this->height){
-			while (read_data[counter]!='-' && read_data[counter]!='#'){
+			while (data[counter]!='-' && data[counter]!='#'){
 				counter+=1;
 			}
-			if (read_data[counter+1]!='-'  && read_data[counter+1]!='#'){
+			if (data[counter+1]!='-'  && data[counter+1]!='#'){
 				counter+=1;
 			}
-			while (read_data[counter]!='-' && read_data[counter]!='#'){
+			while (data[counter]!='-' && data[counter]!='#'){
 				counter+=1;
 			}
 			while (counter_width < this->width) {
-				if(read_data[counter]=='#'){
+				if(data[counter]=='#'){
 					setBit(temp, counter_width);
 				}
 				counter_width+=1;
@@ -48,7 +52,6 @@ void Fonts::createFont(const char* path) {
 		counter_height=0;
 		Font[i] = new Letter(table, height, width);
 	}
-	delete(read_data);
 }
 
 uint32_t* Fonts::getLetter(uint8_t letter) {

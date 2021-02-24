@@ -1,3 +1,5 @@
+/* Created on: 22.02.2021
+   Author: daniel   */
 #ifndef FONTS_H
 #define FONTS_H
 
@@ -7,12 +9,15 @@
 
 using namespace std;
 
+#define NUMBER_OF_LETTERS 	95
+
 class Fonts{
 
 public:
 	Fonts(uint8_t width, uint8_t height, uint8_t width_to_see, uint8_t height_to_see);
 	void send_uart (char *string);
 	void createFont(const char* path);
+	void createObjects(char* data);
 	uint32_t* getLetter(uint8_t letter);
 	uint8_t getWidth();
 	uint8_t getHeight();
@@ -27,4 +32,4 @@ private:
 	uint8_t width_to_see;
 };
 
-#endif FONTS_H
+#endif

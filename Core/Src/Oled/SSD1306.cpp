@@ -1,10 +1,3 @@
-/*
- * SSD1306.cpp
- *
- *  Created on: 22.03.2020
- *      Author: danie
- */
-
 #include "SSD1306.h"
 
 
@@ -57,11 +50,9 @@ void SSD1306::writeData() {
 
 
 void SSD1306::oledInterruptDMA(){
-
 	//if (dma_status == 1){
-	if (status==2);
-	else if (status==0){
-		counter+=1;
+	if (status==0){
+		counter+=1;   //counter - line, OLED is divided for 8 parts, each includes 8 pixels in heigh, 1bytes mean 8pixels vertically
 		lineCommands[0]=SET_PAGE_START_ADDR + counter;
 		lineCommands[1]=LOW_COLUMN_ADDR;
 		lineCommands[2]=HIGH_COLUMN_ADDR;
@@ -144,7 +135,6 @@ void SSD1306::init(void) {
 	initCommands[26]=DC_ENABLE;
 	initCommands[27]=TURN_ON;
 
-	status=2;
 	currentX = 0;
 	currentY = 0;
 	initialized = 1;
@@ -168,24 +158,19 @@ void SSD1306::init(void) {
 	}
 }
 
-// Fill the whole screen with the given color
 void SSD1306::fillBuffer(BufferSSD1306::Color color) {
 	/* Set memory */
 	this->buffer->fill(color);
 }
 
-// Draw 1 char to the screen buffer
-// color    => BLACK or WHITE
 void SSD1306::writeChar(char ch, uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX,uint8_t coordY) {
 	this->buffer->addLetter((uint8_t)ch, font_width, font_height, color, coordX, coordY);
 }
 
-// Write full string to screenbuffer
 void SSD1306::writeString(char* str,  uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY) {
 	this->buffer->addText(str, font_width, font_height, color, coordX, coordY);
 }
 
-// Position the cursor
 void SSD1306::setCursor(uint8_t x, uint8_t y) {
 	if (x > this->width)
 		x = this->width;
@@ -198,24 +183,8 @@ void SSD1306::setCursor(uint8_t x, uint8_t y) {
 SSD1306::SSD1306(OledSettingsI2C oledSettingsI2C){
 	this->I2C_Port = oledSettingsI2C.hi2c;
 	this->I2C_ADDR = oledSettingsI2C.address;
-
 	//To poniez to chyba do funkcji init, bo nie jest zwiazne a konstruktorzem, ewentualnie parametry poniższe można dodać do OledSettingsI2C np kolejne kole dma_status, i dać im wartosci domysle np dma_status = SET_OFF
 	// Wtedy ktos bedzie mógł ustawić te dodatkowe paramrtery, ale jezeli ich nie ustawi i stworzu obiekt OledSettingsI2C to ustawia tylko adres i hi2c, a reszta ma wartosc domyslna, do przemyslenia jak uwazasz ze powinno byc to zrobione
-	this->dma_status=SET_OFF;
-	this->mirror_vertical_status = SET_OFF;
-	this->mirror_horizontal_status = SET_OFF;
-	this->inversion_color_status = SET_OFF;
-	this->height=64;
-	this->width=128;
-	allocBuffer();
-	connectionOled=I2C;
-	counter=7;
-	buffer = new BufferSSD1306 (this->width, this->height);
-}
-
-SSD1306::SSD1306(I2C_HandleTypeDef* i2c, int I2C_ADDRESS){
-	this->I2C_Port=i2c;
-	this->I2C_ADDR=I2C_ADDRESS;
 	this->dma_status=SET_OFF;
 	this->mirror_vertical_status = SET_OFF;
 	this->mirror_horizontal_status = SET_OFF;
@@ -236,8 +205,6 @@ SSD1306::SSD1306(OledSettingsSPI oledSettingsSPI){
 	this->CsPin = oledSettingsSPI.cs.pin;
 	this->DcPort = oledSettingsSPI.dc.port;
 	this->DcPin = oledSettingsSPI.dc.pin;
-
-
 	//To poniez to chyba do funkcji init, bo nie jest zwiazne a konstruktorzem
 	this->dma_status=SET_OFF;
 	this->mirror_vertical_status = SET_OFF;
@@ -251,26 +218,6 @@ SSD1306::SSD1306(OledSettingsSPI oledSettingsSPI){
 	buffer = new BufferSSD1306 (this->width, this->height);
 }
 
-SSD1306::SSD1306(SPI_HandleTypeDef* hspi, gpio_struct reset, gpio_struct DC,
-		gpio_struct CS) {
-	this->SpiPort = hspi;
-	this->ResetPort = reset.port;
-	this->ResetPin = reset.pin;
-	this->CsPort = CS.port;
-	this->CsPin = CS.pin;
-	this->DcPort = DC.port;
-	this->DcPin = DC.pin;
-	this->dma_status=SET_OFF;
-	this->mirror_vertical_status = SET_OFF;
-	this->mirror_horizontal_status = SET_OFF;
-	this->inversion_color_status = SET_OFF;
-	this->height=64;
-	this->width=128;
-	allocBuffer();
-	connectionOled=SPI;
-	counter=7;
-	buffer = new BufferSSD1306 (this->width, this->height);
-}
 
 SSD1306::~SSD1306() {
 	// TODO Auto-generated destructor stub
