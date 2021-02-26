@@ -57,6 +57,5 @@ void Interface_manager::display(){
             }
         }
     }
-    oled->writeString("[\]^_abcdefghij", 7, 10, BufferSSD1306::Black, 5, 25);
-    oled->writeString("ABCDEFGHIJKLMVWXYZ", 7, 10, BufferSSD1306::Black, 5, 36);
+    oled->writeString("ABCDEFGHIJKLMVWXYZ", 11, 18, BufferSSD1306::Black, 5, 36);
 }
