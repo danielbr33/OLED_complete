@@ -1,6 +1,7 @@
 #include <BufferSSD1306.h>
 
 void BufferSSD1306::fill(Color color) {
+	ready = false;
 	for (uint8_t i = 0; i < this->buffer_height / BUFFOR_PART_HEIGHT; i++)
 		for (uint8_t j = 0; j < this->buffer_width; j++) {
 			if (color == White)
@@ -8,6 +9,7 @@ void BufferSSD1306::fill(Color color) {
 			else
 				table[i][j] = PART_BUFFOR_NOT_FILLED;
 		}
+	ready = true;
 }
 
 
@@ -25,6 +27,11 @@ BufferSSD1306::BufferSSD1306(uint8_t buffer_width, uint8_t buffer_height){
 	for (uint8_t j=0; j < (this->buffer_height/BUFFOR_PART_HEIGHT); j++)
 		for (uint8_t i = 0; i < this->buffer_width; i++)
 			table[j][i] = 0;
+	ready = true;
+}
+
+bool BufferSSD1306::checkReady(){
+	return ready;
 }
 
 BufferSSD1306::~BufferSSD1306(){
@@ -32,6 +39,7 @@ BufferSSD1306::~BufferSSD1306(){
 }
 
 void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	ready = false;
 	if(actualFont == nullptr){
 		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
 			createFont(width, height);
@@ -87,9 +95,11 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 			}
 		}
 	}
+	ready = true;
 }
 
 void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	ready = false;
 	if(actualFont == nullptr ){
 		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
 			createFont(width, height);
@@ -106,6 +116,7 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 		uint8_t current_X = coord_X + i * actualFont->getWidth();
 		addLetter(text[i], width, height, color, current_X, coord_Y);
 	}
+	ready = true;
 }
 
 void BufferSSD1306::createFont(uint8_t width, uint8_t height) {

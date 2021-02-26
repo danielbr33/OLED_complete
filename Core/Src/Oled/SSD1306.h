@@ -80,6 +80,7 @@ public:
 	void changeInversionColor(State inversion);
 	void changeHeight(uint8_t height);
 	void changeWidth(uint8_t width);
+	bool checkBufferReady();
 
 private:
 	I2C_HandleTypeDef* I2C_Port;

@@ -158,6 +158,10 @@ void SSD1306::init(void) {
 	}
 }
 
+bool SSD1306::checkBufferReady(){
+	return buffer->checkReady();
+}
+
 void SSD1306::fillBuffer(BufferSSD1306::Color color) {
 	/* Set memory */
 	this->buffer->fill(color);

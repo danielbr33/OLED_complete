@@ -28,6 +28,7 @@ public:
 	void fill(Color color);
 	uint8_t* getBuffer(uint8_t sector);  //sector-8 verses
 	uint8_t findFont(uint8_t width, uint8_t height);
+	bool checkReady();
 
 private:
 	uint8_t** table;
@@ -36,6 +37,7 @@ private:
 	uint8_t buffor_element_height;
 	Fonts* actualFont;
 	vector<Fonts*> FontsAll;
+	bool ready;
 };
 
 #endif
