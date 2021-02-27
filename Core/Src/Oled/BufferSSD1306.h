@@ -31,7 +31,8 @@ public:
 	bool checkReady();
 
 private:
-	void sumTableValue(uint8_t x, uint8_t y, uint8_t value);
+	void operateWhiteTableValue(uint8_t x, uint8_t y, uint8_t value);
+	void operateBlackTableValue(uint8_t x, uint8_t y, uint8_t value);
 	uint8_t** table;
 	int buffer_width;
 	int buffer_height;

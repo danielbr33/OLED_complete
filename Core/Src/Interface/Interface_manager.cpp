@@ -38,8 +38,9 @@ Interface_Element::Button Interface_manager::readKey(){
 }
 void Interface_manager::display(){
 	oled->fillBuffer(BufferSSD1306::White);
+
     if( Ssd_1306->isNoChangeableErrorCounting() ){
-        oled->writeString("No change", 7, 10, BufferSSD1306::Black, 2, 2);
+        oled->writeString("No change", 6, 11, BufferSSD1306::Black, 2, 2);
         oled->writeString("possible", 7, 10, BufferSSD1306::Black, 2, 17);
     }
     else{

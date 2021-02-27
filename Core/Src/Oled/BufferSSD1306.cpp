@@ -52,40 +52,35 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 		if ( (coord_X + i) >= this->buffer_width)
 			break;
 
+
 		if (color == White) {
 			temp = actualFont->getLetter(letter)[i] << offset;
-			sumTableValue(i+coord_X, number_of_verse, temp);
+			operateWhiteTableValue(i+coord_X, number_of_verse, temp);
 
 			if (height >= (BUFFOR_PART_HEIGHT-offset) ) {
 				temp = actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset);
-				sumTableValue(i+coord_X, number_of_verse+1, temp);
+				operateWhiteTableValue(i+coord_X, number_of_verse+1, temp);
 			}
 			//TODO: przyjrzec się tym warunkom
 			if (height >= (2*BUFFOR_PART_HEIGHT-offset) ) {
 				temp = actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset);
-				sumTableValue(i+coord_X, number_of_verse+2, temp);
+				operateWhiteTableValue(i+coord_X, number_of_verse+2, temp);
 			}
 		}
 
-
-		//To tez przepisac jakos, najlpeij na jakies mniejsze funkcje, tak abyło to było czytlne i odporone na błedy bo teraz w tych table[x +2][y-1] moza sie pogubic
-		//przemyslec jak to zrobic dobrze, tzn sensownie i czytelnie, bo pewnie sie da
-		//rowazyc przejscie z operacji na tabliach na funkcje zwracajaca pole w tablicy o wartosci x i y, wtedy funkcja np getTableValue(int x, int y) moze nam sprawdzac czy nie wychodzmy poza zakres
-		//takie bezposrednie operacje na wskazniakch pamieci (a operartor [] tym jest) prosi sie o kłopty i błedy wychodzenia poza pamiec i tylko frustruje a nie pomaga znaleźc buga
-		//te operacje na bitach np ~0 zmamienic na to czym sie faktycznie zajmuja (opis np isEmpty lub cos, nie wiem co dokładnie oznacza), ale nie wiem tez dlatego ze jest taki zapis :p
 		else if (color == Black) {
-			if (table[number_of_verse][i+coord_X] == 0)
-				table[number_of_verse][i + coord_X] = ~0;
-			table[number_of_verse][i + coord_X] &= ~(actualFont->getLetter(letter)[i] << offset);
-			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / BUFFOR_PART_HEIGHT)  &&  (i+coord_X)<=this->buffer_width ) {
-				if (table[number_of_verse + 1][i + coord_X] == 0)
-					table[number_of_verse + 1][i + coord_X] = ~0;
-				table[number_of_verse + 1][i + coord_X] &= ~(actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+			table[number_of_verse][i + coord_X] = ~0;
+			temp = actualFont->getLetter(letter)[i] << offset;
+			operateBlackTableValue(i+coord_X, number_of_verse, temp);
+			if (height >= (BUFFOR_PART_HEIGHT-offset)) {
+				table[number_of_verse + 1][i + coord_X] = ~0;
+				temp = actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset);
+				operateBlackTableValue(i + coord_X, number_of_verse + 1, temp);
 			}
-			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / BUFFOR_PART_HEIGHT) && actualFont->getHeight() >= 10  &&  (i+coord_X)<=this->buffer_width ) {
-				if (table[number_of_verse + 2][i + coord_X] == 0)
-					table[number_of_verse + 2][i + coord_X] = ~0;
-				table[number_of_verse + 2][i + coord_X] &= ~(actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
+			if (height >= (2*BUFFOR_PART_HEIGHT-offset)) {
+				table[number_of_verse + 2][i + coord_X] = ~0;
+				temp = actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset);
+				operateBlackTableValue(i + coord_X, number_of_verse + 2, temp);
 			}
 		}
 	}
@@ -129,7 +124,12 @@ uint8_t BufferSSD1306::findFont(uint8_t width, uint8_t height) {
 	return 0;
 }
 
-void BufferSSD1306::sumTableValue(uint8_t x, uint8_t y, uint8_t value){
+void BufferSSD1306::operateWhiteTableValue(uint8_t x, uint8_t y, uint8_t value){
 	if (  y < (this->buffer_height/BUFFOR_PART_HEIGHT)  &&  x < this->buffer_width  )
-		table[x][y] |= value;
+		table[y][x] |= value;
+}
+
+void BufferSSD1306::operateBlackTableValue(uint8_t x, uint8_t y, uint8_t value){
+	if (  y < (this->buffer_height/BUFFOR_PART_HEIGHT)  &&  x < this->buffer_width  )
+		table[y][x] &= ~value;
 }
