@@ -1,10 +1,10 @@
 #include "Fonts.h"
 
-Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_to_see, uint8_t height_to_see){
+Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real){
 	this->width = width;
 	this->height = height;
-	this->width_to_see = width_to_see;
-	this->height_to_see = height_to_see;
+	this->width_real = width_real;
+	this->height_real = height_real;
 }
 
 
@@ -27,7 +27,7 @@ void Fonts::createObjects(char* data){
 
 	Font = new Letter* [NUMBER_OF_LETTERS];
 	for (uint8_t i = 0; i < NUMBER_OF_LETTERS; i++) {
-		while (counter_height < this->height){
+		while (counter_height < this->height_real){
 			while (data[counter]!='-' && data[counter]!='#'){
 				counter+=1;
 			}
@@ -37,7 +37,7 @@ void Fonts::createObjects(char* data){
 			while (data[counter]!='-' && data[counter]!='#'){
 				counter+=1;
 			}
-			while (counter_width < this->width) {
+			while (counter_width < this->width_real) {
 				if(data[counter]=='#'){
 					setBit(temp, counter_width);
 				}
@@ -50,7 +50,7 @@ void Fonts::createObjects(char* data){
 			counter_height+=1;
 		}
 		counter_height=0;
-		Font[i] = new Letter(table, height, width);
+		Font[i] = new Letter(table, height_real, width_real);
 	}
 }
 
@@ -66,10 +66,10 @@ uint8_t Fonts::getHeight() {
 	return this->height;
 }
 
-uint8_t Fonts::getWidthSeen() {
-	return this->width_to_see;
+uint8_t Fonts::getWidthReal() {
+	return this->width_real;
 }
 
-uint8_t Fonts::getHeightSeen() {
-	return this->height_to_see;
+uint8_t Fonts::getHeightReal() {
+	return this->height_real;
 }
