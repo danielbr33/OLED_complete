@@ -54,31 +54,34 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 
 
 		if (color == White) {
+			table[number_of_verse][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
 			temp = actualFont->getLetter(letter)[i] << offset;
 			operateWhiteTableValue(i+coord_X, number_of_verse, temp);
 
 			if (height >= (BUFFOR_PART_HEIGHT-offset) ) {
+				table[number_of_verse + 1][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
 				temp = actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset);
 				operateWhiteTableValue(i+coord_X, number_of_verse+1, temp);
 			}
-			//TODO: przyjrzec się tym warunkom
+
 			if (height >= (2*BUFFOR_PART_HEIGHT-offset) ) {
+				table[number_of_verse + 2][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
 				temp = actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset);
 				operateWhiteTableValue(i+coord_X, number_of_verse+2, temp);
 			}
 		}
 
 		else if (color == Black) {
-			table[number_of_verse][i + coord_X] = ~0;
+			table[number_of_verse][i + coord_X] = ~PART_BUFFOR_NOT_FILLED;
 			temp = actualFont->getLetter(letter)[i] << offset;
 			operateBlackTableValue(i+coord_X, number_of_verse, temp);
 			if (height >= (BUFFOR_PART_HEIGHT-offset)) {
-				table[number_of_verse + 1][i + coord_X] = ~0;
+				table[number_of_verse + 1][i + coord_X] = ~PART_BUFFOR_NOT_FILLED;
 				temp = actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset);
 				operateBlackTableValue(i + coord_X, number_of_verse + 1, temp);
 			}
 			if (height >= (2*BUFFOR_PART_HEIGHT-offset)) {
-				table[number_of_verse + 2][i + coord_X] = ~0;
+				table[number_of_verse + 2][i + coord_X] = ~PART_BUFFOR_NOT_FILLED;
 				temp = actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset);
 				operateBlackTableValue(i + coord_X, number_of_verse + 2, temp);
 			}
@@ -90,7 +93,7 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
 	if(actualFont->getWidth()!=width || actualFont->getHeight()!=height)
-		if(findFont(width, height) == false){ //szukanie czcionki nie powinno byc po nazwie? mozmemy miec dwie czcionki w tym samym rozmierze a innym wygladzie? to pytanie a nie krytyka, do przemylsnia
+		if(findFont(width, height) == false){
 			createFont(width, height);
 			findFont(width, height);
 		}

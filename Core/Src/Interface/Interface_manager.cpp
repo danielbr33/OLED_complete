@@ -37,24 +37,25 @@ Interface_Element::Button Interface_manager::readKey(){
     }
 }
 void Interface_manager::display(){
-	oled->fillBuffer(BufferSSD1306::White);
+	oled->fillBuffer(BufferSSD1306::Black);
 
     if( Ssd_1306->isNoChangeableErrorCounting() ){
-        oled->writeString("No change", 6, 11, BufferSSD1306::Black, 2, 2);
-        oled->writeString("possible", 7, 10, BufferSSD1306::Black, 2, 17);
+        oled->writeString("No change", 6, 11, BufferSSD1306::White, 2, 2);
+        oled->writeString("possible", 7, 10, BufferSSD1306::White, 2, 17);
+        HAL_Delay(100);
     }
     else{
-    	oled->writeString( (char*)Ssd_1306->getParameterHeadline().c_str(), 7, 10, BufferSSD1306::Black, 2, 2);
+    	oled->writeString( (char*)Ssd_1306->getParameterHeadline().c_str(), 7, 10, BufferSSD1306::White, 2, 2);
         if( !(Ssd_1306->isBackFromSubListParameter()) && !(Ssd_1306->hasSubList()) ){
             if( Ssd_1306->isVisibleValue() ){
             	char temp[15];
             	sprintf(temp, "%d", Ssd_1306->getParameterValue());
-        		oled->writeString( temp, 7, 10, BufferSSD1306::Black, 2, 17);
+        		oled->writeString( temp, 7, 10, BufferSSD1306::White, 2, 17);
             }
             else{
                 for( uint16_t i = (Ssd_1306->getParameterValue() )*10 ; i > 0 ; i /= 10)
-                    oled->writeString(" ", 7, 10, BufferSSD1306::Black, 2, 2);
-                oled->writeString((char*)Ssd_1306->getParameterUnit().c_str(), 7, 10, BufferSSD1306::Black, 2, 17);
+                    oled->writeString(" ", 7, 10, BufferSSD1306::White, 2, 2);
+                oled->writeString((char*)Ssd_1306->getParameterUnit().c_str(), 7, 10, BufferSSD1306::White, 2, 17);
             }
         }
     }
