@@ -12,6 +12,8 @@
 #ifndef SRC_FILEMANAGER_FONTSJSONMANAGER_H_
 #define SRC_FILEMANAGER_FONTSJSONMANAGER_H_
 
+using namespace std;
+
 class FontsJsonManager {
 private:
 	FontsJsonManager();
@@ -33,9 +35,15 @@ public:
 	}
 
 	void findFontToCreate(uint8_t width, uint8_t height);
+	void findFontToCreate(string name);
 	string getPath(uint8_t width, uint8_t height);
 	uint8_t getWidth(uint8_t width, uint8_t height);
 	uint8_t getHeight(uint8_t width, uint8_t height);
+	string getName(uint8_t width, uint8_t height);
+	string getPath(string name);
+	uint8_t getWidth(string name);
+	uint8_t getHeight(string name);
+	string getName(string name);
 };
 
 #endif /* SRC_FILEMANAGER_FONTSJSONMANAGER_H_ */

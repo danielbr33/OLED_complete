@@ -52,7 +52,6 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 		if ( (coord_X + i) >= this->buffer_width)
 			break;
 
-
 		if (color == White) {
 			table[number_of_verse][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
 			temp = actualFont->getLetter(letter)[i] << offset;
@@ -90,6 +89,59 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 	ready = true;
 }
 
+void BufferSSD1306::addLetter(uint8_t letter, string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	ready = false;
+	if(actualFont->getName()!=name)
+		if(findFont(name) == false){
+			createFont(name);
+			findFont(name);
+		}
+	uint8_t temp;
+	uint8_t number_of_verse = (uint8_t)(coord_Y/BUFFOR_PART_HEIGHT);
+	uint8_t offset = coord_Y % BUFFOR_PART_HEIGHT;
+	for (uint8_t i = 0; i < actualFont->getWidth(); i++) {
+		if ( (coord_X + i) >= this->buffer_width)
+			break;
+
+
+		if (color == White) {
+			table[number_of_verse][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
+			temp = actualFont->getLetter(letter)[i] << offset;
+			operateWhiteTableValue(i+coord_X, number_of_verse, temp);
+
+			if (actualFont->getHeight() >= (BUFFOR_PART_HEIGHT-offset) ) {
+				table[number_of_verse + 1][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
+				temp = actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset);
+				operateWhiteTableValue(i+coord_X, number_of_verse+1, temp);
+			}
+
+			if (actualFont->getHeight() >= (2*BUFFOR_PART_HEIGHT-offset) ) {
+				table[number_of_verse + 2][i + coord_X] &= PART_BUFFOR_NOT_FILLED;
+				temp = actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset);
+				operateWhiteTableValue(i+coord_X, number_of_verse+2, temp);
+			}
+		}
+
+		else if (color == Black) {
+			table[number_of_verse][i + coord_X] = ~PART_BUFFOR_NOT_FILLED;
+			temp = actualFont->getLetter(letter)[i] << offset;
+			operateBlackTableValue(i+coord_X, number_of_verse, temp);
+			if (actualFont->getHeight() >= (BUFFOR_PART_HEIGHT-offset)) {
+				table[number_of_verse + 1][i + coord_X] = ~PART_BUFFOR_NOT_FILLED;
+				temp = actualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset);
+				operateBlackTableValue(i + coord_X, number_of_verse + 1, temp);
+			}
+			if (actualFont->getHeight() >= (2*BUFFOR_PART_HEIGHT-offset)) {
+				table[number_of_verse + 2][i + coord_X] = ~PART_BUFFOR_NOT_FILLED;
+				temp = actualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset);
+				operateBlackTableValue(i + coord_X, number_of_verse + 2, temp);
+			}
+		}
+	}
+	ready = true;
+}
+
+
 void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
 	if(actualFont->getWidth()!=width || actualFont->getHeight()!=height)
@@ -104,22 +156,65 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 	ready = true;
 }
 
+void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	ready = false;
+	if(actualFont->getName()!=name)
+		if(findFont(name) == false){
+			createFont(name);
+			findFont(name);
+		}
+	for (uint8_t i = 0; i < strlen((char*)text); i++) { //przemylsec zmiane z z char* na std::string i zmiane archaicznych strlen na std::string string, string.size()
+		uint8_t current_X = coord_X + i * actualFont->getWidth();
+		addLetter(text[i], name, color, current_X, coord_Y);
+	}
+	ready = true;
+}
+
 void BufferSSD1306::createFont(uint8_t width, uint8_t height) {
 	char* path;
 	uint8_t width_to_see;
 	uint8_t height_to_see;
+	string name_temp;
 	path = (char*)((FontsJsonManager::getInstance().getPath(width,  height)).c_str());
 	width_to_see = FontsJsonManager::getInstance().getWidth(width,  height);
 	height_to_see = FontsJsonManager::getInstance().getHeight(width,  height);
-	actualFont = new Fonts(width, height, width_to_see, height_to_see);
+	name_temp = FontsJsonManager::getInstance().getName(width,  height);
+	actualFont = new Fonts(width, height, width_to_see, height_to_see, name_temp);
 	actualFont->createFont(path);
 	FontsAll.push_back(new Fonts(*actualFont));
 	delete actualFont;
 }
 
+void BufferSSD1306::createFont(string name) {
+	char* path;
+	uint8_t width_to_see;
+	uint8_t height_to_see;
+	string name_temp;
+	path = (char*)((FontsJsonManager::getInstance().getPath(name)).c_str());
+	width_to_see = FontsJsonManager::getInstance().getWidth(name);
+	height_to_see = FontsJsonManager::getInstance().getHeight(name);
+	name_temp = FontsJsonManager::getInstance().getName(name);
+	if(name_temp == name){
+		actualFont = new Fonts(width_to_see, height_to_see, width_to_see, height_to_see, name);
+		actualFont->createFont(path);
+		FontsAll.push_back(new Fonts(*actualFont));
+		delete actualFont;
+	}
+}
+
 uint8_t BufferSSD1306::findFont(uint8_t width, uint8_t height) {
 	for (uint8_t i = 0; i < FontsAll.size(); i++) {
 		if (FontsAll[i]->getHeight() == height  &&  FontsAll[i]->getWidth() == width) {
+			actualFont = FontsAll[i];
+			return 1;
+		}
+	}
+	return 0;
+}
+
+uint8_t BufferSSD1306::findFont(string name) {
+	for (uint8_t i = 0; i < FontsAll.size(); i++) {
+		if (FontsAll[i]->getName() == name) {
 			actualFont = FontsAll[i];
 			return 1;
 		}

@@ -171,8 +171,16 @@ void SSD1306::writeChar(char ch, uint8_t font_width, uint8_t font_height, Buffer
 	this->buffer->addLetter((uint8_t)ch, font_width, font_height, color, coordX, coordY);
 }
 
+void SSD1306::writeChar(char ch, string name_font, BufferSSD1306::Color color, uint8_t coordX,uint8_t coordY) {
+	this->buffer->addLetter((uint8_t)ch, name_font, color, coordX, coordY);
+}
+
 void SSD1306::writeString(char* str,  uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY) {
 	this->buffer->addText(str, font_width, font_height, color, coordX, coordY);
+}
+
+void SSD1306::writeString(char* str,  string name_font, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY) {
+	this->buffer->addText(str, name_font, color, coordX, coordY);
 }
 
 void SSD1306::setCursor(uint8_t x, uint8_t y) {

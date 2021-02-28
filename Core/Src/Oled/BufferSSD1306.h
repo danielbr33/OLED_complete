@@ -1,3 +1,6 @@
+/* Created on: 22.02.2021
+   Author: daniel   */
+
 #ifndef BUFFERSSD1306_H_
 #define BUFFERSSD1306_H_
 
@@ -8,9 +11,9 @@
 #include "string.h"
 #include "cardSD.h"
 
+using namespace std;
+
 #define BUFFOR_PART_HEIGHT 8
-/* Created on: 22.02.2021
-   Author: daniel   */
 #define PART_BUFFOR_FILLED 255
 #define PART_BUFFOR_NOT_FILLED	0
 
@@ -24,10 +27,15 @@ public:
 	~BufferSSD1306();
 	void addLetter(uint8_t letter, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y);
 	void addText(char *text, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y);
+	uint8_t findFont(uint8_t width, uint8_t height);
 	void createFont(uint8_t width, uint8_t height);
+
+	void addLetter(uint8_t letter, string name, Color color, uint8_t coord_X, uint8_t coord_Y);
+	void addText(char *text, string name, Color color, uint8_t coord_X, uint8_t coord_Y);
+	uint8_t findFont(string name);
+	void createFont(string name);
 	void fill(Color color);
 	uint8_t* getBuffer(uint8_t sector);  //sector-8 verses
-	uint8_t findFont(uint8_t width, uint8_t height);
 	bool checkReady();
 
 private:

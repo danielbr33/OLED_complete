@@ -59,5 +59,5 @@ void Interface_manager::display(){
             }
         }
     }
-    oled->writeString("ABCDEFGHIJKLMVWXYZ", 10, 19, BufferSSD1306::Black, 5, 36);
+    oled->writeString("ABCDGHIJKLMVWXYZ", "font11x18", BufferSSD1306::Black, 5, 36);
 }

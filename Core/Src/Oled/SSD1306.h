@@ -68,6 +68,8 @@ public:
 	void fillBuffer(BufferSSD1306::Color color);
 	void writeChar(char ch,  uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX,uint8_t coordY);
 	void writeString(char* str,  uint8_t font_width, uint8_t font_height, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY);
+	void writeChar(char ch,  string name_font, BufferSSD1306::Color color, uint8_t coordX,uint8_t coordY);
+	void writeString(char* str,  string name_font, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY);
 	void setCursor(uint8_t x, uint8_t y);
 	void oledInterruptDMA(); //put in oled SPI interrupt or in freertos
 	void sendScreen(); //polling mode

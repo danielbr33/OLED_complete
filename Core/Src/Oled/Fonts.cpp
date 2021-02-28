@@ -1,10 +1,11 @@
 #include "Fonts.h"
 
-Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real){
+Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real, string name){
 	this->width = width;
 	this->height = height;
 	this->width_real = width_real;
 	this->height_real = height_real;
+	this->name = name;
 }
 
 
@@ -72,4 +73,8 @@ uint8_t Fonts::getWidthReal() {
 
 uint8_t Fonts::getHeightReal() {
 	return this->height_real;
+}
+
+string Fonts::getName(){
+	return this->name;
 }

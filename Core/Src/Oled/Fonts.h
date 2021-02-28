@@ -14,7 +14,7 @@ using namespace std;
 class Fonts{
 
 public:
-	Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real);
+	Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real, string name);
 	void send_uart (char *string);
 	void createFont(const char* path);
 	void createObjects(char* data);
@@ -23,9 +23,11 @@ public:
 	uint8_t getHeight();
 	uint8_t getWidthReal();
 	uint8_t getHeightReal();
+	string getName();
 
 private:
 	Letter** Font;
+	string name;
 	uint8_t height;
 	uint8_t width;
 	uint8_t height_real;
