@@ -182,7 +182,7 @@ void StartInterfaceTask(void const * argument)
   for(;;)
   {
 	Interface2->interrupt();
-    osDelay(50);
+    osDelay(100);
   }
   /* USER CODE END StartInterfaceTask */
 }

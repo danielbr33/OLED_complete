@@ -5,7 +5,6 @@
  *      Author: danie
  */
 
-#include <cardSD.h>
 #include <JsonManager.h>
 
 JsonManager::JsonManager() {

@@ -8,9 +8,6 @@
 #include "cardSD.h"
 
 char* cardSD::readFile(char* path, char* read_data){
-	//To przerzucic do osobnej klasu obsługuje karte SD, zobacz sobie na to repo, to co pisała marta, ja to poprawiłem https://github.com/rvbc1/STM32_Flash_Memory, obecnie jest tylko poprawny zapis tam
-		// w klasie FlashMemoryManager.cpp w funkcji writeDataInMemory przekazywana jest ilosc bajktów i bajkty do zapisu, w klasie kary powinno byc podobnie, tylko jeszcze scieza do polku. Ale ogólnie popatrze na to bo ja to tam juz dosc mocno przekopałem i jest w miare dobrze napisane
-
 	uint32_t size;
 	fresult = f_mount(&(this->fs), (const TCHAR*)"/", 1);
 	fresult = f_stat (path, &fno);

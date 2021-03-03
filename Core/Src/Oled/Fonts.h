@@ -6,6 +6,7 @@
 #include "Letter.h"
 #include "bitoperations.h"
 #include "cardSD.h"
+#include "string.h"
 
 using namespace std;
 

@@ -195,8 +195,6 @@ void SSD1306::setCursor(uint8_t x, uint8_t y) {
 SSD1306::SSD1306(OledSettingsI2C oledSettingsI2C){
 	this->I2C_Port = oledSettingsI2C.hi2c;
 	this->I2C_ADDR = oledSettingsI2C.address;
-	//To poniez to chyba do funkcji init, bo nie jest zwiazne a konstruktorzem, ewentualnie parametry poniższe można dodać do OledSettingsI2C np kolejne kole dma_status, i dać im wartosci domysle np dma_status = SET_OFF
-	// Wtedy ktos bedzie mógł ustawić te dodatkowe paramrtery, ale jezeli ich nie ustawi i stworzu obiekt OledSettingsI2C to ustawia tylko adres i hi2c, a reszta ma wartosc domyslna, do przemyslenia jak uwazasz ze powinno byc to zrobione
 	this->dma_status=SET_OFF;
 	this->mirror_vertical_status = SET_OFF;
 	this->mirror_horizontal_status = SET_OFF;
@@ -217,7 +215,6 @@ SSD1306::SSD1306(OledSettingsSPI oledSettingsSPI){
 	this->CsPin = oledSettingsSPI.cs.pin;
 	this->DcPort = oledSettingsSPI.dc.port;
 	this->DcPin = oledSettingsSPI.dc.pin;
-	//To poniez to chyba do funkcji init, bo nie jest zwiazne a konstruktorzem
 	this->dma_status=SET_OFF;
 	this->mirror_vertical_status = SET_OFF;
 	this->mirror_horizontal_status = SET_OFF;

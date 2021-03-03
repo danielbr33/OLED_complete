@@ -9,19 +9,9 @@
 #include "dma.h"
 #include "fatfs.h"
 #include "sdio.h"
-#include "usart.h"
-#include "gpio.h"
-
-#include "dma.h"
-#include "fatfs.h"
-#include "sdio.h"
-#include "usart.h"
-#include "gpio.h"
 #include "stdlib.h"
 #include "cstring"
 #include "string.h"
-#include "stdio.h"
-#include "stm32f4xx_hal.h"
 
 
 #ifndef SRC_FILEMANAGER_CARDSD_H_

@@ -14,10 +14,14 @@ FontsJsonManager::FontsJsonManager() {
 	for (JsonObject repo : array) {
 		char* path;
 		path = (char*)repo["file"].as<const char*>();
-		actualFontSettings.font = repo["font"].as<string>();
-		actualFontSettings.width = repo["width"].as<uint8_t>();
-		actualFontSettings.height = repo["height"].as<uint8_t>();
-		actualFontSettings.path = repo["file"].as<string>();
+		if(repo.containsKey("font"))
+			actualFontSettings.font = repo["font"].as<string>();
+		if(repo.containsKey("width"))
+			actualFontSettings.width = repo["width"].as<uint8_t>();
+		if(repo.containsKey("height"))
+			actualFontSettings.height = repo["height"].as<uint8_t>();
+		if(repo.containsKey("file"))
+			actualFontSettings.path = repo["file"].as<string>();
 		uint64_t temp3 = xPortGetFreeHeapSize();
 		fontsSettings.push_back(actualFontSettings);
 	}
@@ -31,7 +35,7 @@ FontsJsonManager::~FontsJsonManager() {
 void FontsJsonManager::findFontToCreate(uint8_t width, uint8_t height){
 	uint8_t difference = ~0;
 	for (uint8_t i = 0; i <fontsSettings.size(); i++) {
-		if( (abs(width - fontsSettings[i].width) + abs(height - fontsSettings[i].height)) < difference ){ //kod powinien byc bezpieczny jak korzystasz z jsona to sprawdz czy posida dane pole np repo.containsKey("width")
+		if( (abs(width - fontsSettings[i].width) + abs(height - fontsSettings[i].height)) < difference ){
 			actualFontSettings.path = fontsSettings[i].path;
 			actualFontSettings.width = fontsSettings[i].width;
 			actualFontSettings.height = fontsSettings[i].height;
@@ -43,7 +47,7 @@ void FontsJsonManager::findFontToCreate(uint8_t width, uint8_t height){
 
 void FontsJsonManager::findFontToCreate(string name){
 	for (uint8_t i = 0; i <fontsSettings.size(); i++) {
-		if(name == fontsSettings[i].font){ //kod powinien byc bezpieczny jak korzystasz z jsona to sprawdz czy posida dane pole np repo.containsKey("width")
+		if(name == fontsSettings[i].font){
 			actualFontSettings.path = fontsSettings[i].path;
 			actualFontSettings.width = fontsSettings[i].width;
 			actualFontSettings.height = fontsSettings[i].height;

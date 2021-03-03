@@ -39,8 +39,8 @@ public:
 	bool checkReady();
 
 private:
-	void operateWhiteTableValue(uint8_t x, uint8_t y, uint8_t value);
-	void operateBlackTableValue(uint8_t x, uint8_t y, uint8_t value);
+	void operateWhiteTableValue(uint8_t x, uint8_t y, uint8_t value);  //function modifying element of buffor
+	void operateBlackTableValue(uint8_t x, uint8_t y, uint8_t value);  //function modifying element of buffor
 	uint8_t** table;
 	int buffer_width;
 	int buffer_height;

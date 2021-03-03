@@ -149,7 +149,7 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 			createFont(width, height);
 			findFont(width, height);
 		}
-	for (uint8_t i = 0; i < strlen((char*)text); i++) { //przemylsec zmiane z z char* na std::string i zmiane archaicznych strlen na std::string string, string.size()
+	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		uint8_t current_X = coord_X + i * actualFont->getWidth();
 		addLetter(text[i], width, height, color, current_X, coord_Y);
 	}
@@ -163,7 +163,7 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 			createFont(name);
 			findFont(name);
 		}
-	for (uint8_t i = 0; i < strlen((char*)text); i++) { //przemylsec zmiane z z char* na std::string i zmiane archaicznych strlen na std::string string, string.size()
+	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		uint8_t current_X = coord_X + i * actualFont->getWidth();
 		addLetter(text[i], name, color, current_X, coord_Y);
 	}

@@ -42,7 +42,6 @@ void Interface_manager::display(){
     if( Ssd_1306->isNoChangeableErrorCounting() ){
         oled->writeString("No change", 6, 11, BufferSSD1306::White, 2, 2);
         oled->writeString("possible", 7, 10, BufferSSD1306::White, 2, 17);
-        HAL_Delay(100);
     }
     else{
     	oled->writeString( (char*)Ssd_1306->getParameterHeadline().c_str(), 7, 10, BufferSSD1306::White, 2, 2);
