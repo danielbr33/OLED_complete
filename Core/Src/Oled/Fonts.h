@@ -16,15 +16,16 @@ class Fonts{
 
 public:
 	Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real, string name);
-	void send_uart (char *string);
-	void createFont(const char* path);
-	void createObjects(char* data);
-	uint32_t* getLetter(uint8_t letter);
-	uint8_t getWidth();
-	uint8_t getHeight();
-	uint8_t getWidthReal();
-	uint8_t getHeightReal();
-	string getName();
+	void createFont(const char* path);  /*finding font in SD and  createObjects() */
+	void createObjects(char* data);  /*creates objects of fonts which are actually used*/
+	uint32_t* getLetter(uint8_t letter);  /*return pointer to table of letter written as pixels in collumn*/
+	uint8_t getWidth();  /*height written to object independent of size which is available on SD card, for example if you create a font of size 10x20,
+							but the most similiar in SD is 11x18, it will be created but it can be found by 10x20*/
+	uint8_t getHeight();	/*height written to object independent of size which is available on SD card, for example if you create a font of size 10x20,
+							but the most similiar in SD is 11x18, it will be created but it can be found by 10x20*/
+	uint8_t getWidthReal();		/*real size chosen from fonts available in SD card*/
+	uint8_t getHeightReal();	/*real size chosen from fonts available in SD card*/
+	string getName();	/*return name of font*/
 
 private:
 	Letter** Font;

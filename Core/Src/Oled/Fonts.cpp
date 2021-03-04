@@ -32,9 +32,9 @@ void Fonts::createObjects(char* data){
 			while (data[counter]!='-' && data[counter]!='#'){
 				counter+=1;
 			}
-			if (data[counter+1]!='-'  && data[counter+1]!='#'){
-				counter+=1;
-			}
+			if (data[counter+1]!='-'  && data[counter+1]!='#'){  //skip single mark, being the symbol of the letter,
+				counter+=1; 									//e.g to avoid reading'#' or '-' which not code the mark, mark are the symbol
+			}													//if file that this mark is shown as binary
 			while (data[counter]!='-' && data[counter]!='#'){
 				counter+=1;
 			}

@@ -49,7 +49,7 @@ void SSD1306::writeData() {
 }
 
 
-void SSD1306::oledInterruptDMA(){
+void SSD1306::oledInterrupt(){
 	//if (dma_status == 1){
 	if (status==0){
 		counter+=1;   //counter - line, OLED is divided for 8 parts, each includes 8 pixels in heigh, 1bytes mean 8pixels vertically
@@ -146,7 +146,7 @@ void SSD1306::init(void) {
 		else
 			HAL_SPI_Transmit(SpiPort, initCommands, NUMBER_OF_COMMANDS_INIT, HAL_MAX_DELAY);
 		status=0;
-		oledInterruptDMA();
+		oledInterrupt();
 	}
 	else{
 		if (dma_status==SET_ON)

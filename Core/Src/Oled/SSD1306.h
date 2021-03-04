@@ -71,18 +71,18 @@ public:
 	void writeChar(char ch,  string name_font, BufferSSD1306::Color color, uint8_t coordX,uint8_t coordY);
 	void writeString(char* str,  string name_font, BufferSSD1306::Color color, uint8_t coordX, uint8_t coordY);
 	void setCursor(uint8_t x, uint8_t y);
-	void oledInterruptDMA(); //put in oled SPI interrupt or in freertos
+	void oledInterrupt(); //put in oled SPI interrupt or in freertos
 	void sendScreen(); //polling mode
 
 	// Low-level procedures
-	void reset(void);
+	void reset(void);	// while using SPI
 	void changeDMA(State dma);
-	void changeMirrorHorizontal(State mirror);
-	void changeMirrorVertical(State mirror);
-	void changeInversionColor(State inversion);
-	void changeHeight(uint8_t height);
-	void changeWidth(uint8_t width);
-	bool checkBufferReady();
+	void changeMirrorHorizontal(State mirror);   //oled must be reinitialized after change
+	void changeMirrorVertical(State mirror);	//oled must be reinitialized after change
+	void changeInversionColor(State inversion);	//oled must be reinitialized after change
+	void changeHeight(uint8_t height);   //if different than default 64
+	void changeWidth(uint8_t width);	//if different than default 128
+	bool checkBufferReady();  //check if it's not edited before sending it to oled
 
 private:
 	I2C_HandleTypeDef* I2C_Port;

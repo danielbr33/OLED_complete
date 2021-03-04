@@ -162,7 +162,7 @@ void StartOledTask(void const * argument)
   for(;;)
   {
 //	oled->oledInterruptDMA();
-	oled2->oledInterruptDMA();
+	oled2->oledInterrupt();
 	osDelay(50);
   }
   /* USER CODE END StartOledTask */
