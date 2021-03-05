@@ -13,6 +13,16 @@ Letter::Letter(uint32_t* tab, uint8_t height, uint8_t width) {
 	}
 }
 
+Letter::Letter(uint16_t* tab, uint8_t height, uint8_t width, uint8_t default_flag) {
+	this->height = height;
+	this->width = width;
+	this->letter_tab = new uint32_t[width];
+	for (uint8_t i = 0; i < width; i++){
+		uint8_t temp = tab[i];
+		this->letter_tab[i] = tab[i];
+	}
+}
+
 
 uint32_t* Letter::getLetter() {
 	return letter_tab;

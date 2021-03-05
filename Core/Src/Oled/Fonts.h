@@ -7,6 +7,7 @@
 #include "bitoperations.h"
 #include "cardSD.h"
 #include "string.h"
+#include "defaultFont.h"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ public:
 	Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real, string name);
 	void createFont(const char* path);  /*finding font in SD and  createObjects() */
 	void createObjects(char* data);  /*creates objects of fonts which are actually used*/
+	void createDefaultFont();
 	uint32_t* getLetter(uint8_t letter);  /*return pointer to table of letter written as pixels in collumn*/
 	uint8_t getWidth();  /*height written to object independent of size which is available on SD card, for example if you create a font of size 10x20,
 							but the most similiar in SD is 11x18, it will be created but it can be found by 10x20*/

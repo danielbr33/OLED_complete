@@ -8,6 +8,12 @@ Fonts::Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_r
 	this->name = name;
 }
 
+void Fonts::createDefaultFont(){
+	Font = new Letter* [NUMBER_OF_LETTERS];
+	for (uint8_t i = 0; i < 95; i++) {
+		Font[i] = new Letter((uint16_t*)&defaultFont.data[i * width], height, width, 0);
+	}
+}
 
 void Fonts::createFont(const char* path) {
 	char* read_data;

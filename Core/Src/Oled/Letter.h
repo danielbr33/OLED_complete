@@ -15,6 +15,8 @@ class Letter{
 public:
 	Letter(uint32_t* tab, uint8_t height, uint8_t width);  /*max height=32 due to the size of uint32_t, if exceeded some bits may by losted
 															it's written to table of size=width, one variable holds one collumn of letters pixels*/
+	Letter(uint16_t* tab, uint8_t height, uint8_t width, uint8_t default_flag);  /*only for default, value of last parameter
+																				irrelevant, it's only flag to distinguish it*/
 	~Letter();
 	uint32_t* getLetter();
 	uint8_t getWidth();
