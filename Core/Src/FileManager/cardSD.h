@@ -27,6 +27,7 @@ private:
 	UINT br, bw;  // File read/write count
 
 public:
+	typedef enum {SD_OK, SD_ERROR, SD_ERROR_READ} SD_Status;
 	cardSD(cardSD const&) = delete;
 	void operator=(cardSD const&) = delete;
 	~cardSD(){}
@@ -35,7 +36,8 @@ public:
 		return instance;
 	}
 	char* readFile(char* path, char* read_data);
-	uint16_t getSizeOfFile(char* path);
+	SD_Status readFile(char* path, char** read_data);
+	SD_Status getSizeOfFile(char* path, uint32_t *size);
 
 };
 

@@ -17,10 +17,7 @@ void Fonts::createDefaultFont(){
 
 void Fonts::createFont(const char* path) {
 	char* read_data;
-	uint32_t size;
-	size = cardSD::getInstance().getSizeOfFile((char*)path);
-	read_data = new char[size];
-	read_data = cardSD::getInstance().readFile((char*)path, read_data);
+	cardSD::getInstance().readFile((char*)path, &read_data);
 	createObjects(read_data);
 	delete(read_data);
 }

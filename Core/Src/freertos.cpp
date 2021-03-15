@@ -117,11 +117,11 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of oledTask */
-  osThreadDef(oledTask, StartOledTask, osPriorityBelowNormal, 0, 128);
+  osThreadDef(oledTask, StartOledTask, osPriorityBelowNormal, 0, 512);
   oledTaskHandle = osThreadCreate(osThread(oledTask), NULL);
 
   /* definition and creation of interfaceTask */
-  osThreadDef(interfaceTask, StartInterfaceTask, osPriorityNormal, 0, 2448);
+  osThreadDef(interfaceTask, StartInterfaceTask, osPriorityNormal, 0, 2048);
   interfaceTaskHandle = osThreadCreate(osThread(interfaceTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
