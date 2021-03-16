@@ -17,7 +17,7 @@ void Fonts::createDefaultFont(){
 
 void Fonts::createFont(const char* path) {
 	char* read_data;
-	cardSD::getInstance().readFile((char*)path, &read_data);
+	cardSD::getInstance().readFile((char*)path, &read_data) != cardSD::SD_OK;
 	createObjects(read_data);
 	delete(read_data);
 }

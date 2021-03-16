@@ -15,16 +15,6 @@
 using namespace std;
 
 class FontsJsonManager {
-private:
-	FontsJsonManager();
-	struct FontsSettings{
-		std::string font;
-		uint8_t height;
-		uint8_t width;
-		string path;
-	};
-	FontsSettings actualFontSettings;
-	vector<FontsSettings> fontsSettings;
 public:
 	FontsJsonManager(JsonManager const&) = delete;
 	void operator=(JsonManager const&) = delete;
@@ -33,7 +23,9 @@ public:
 		static FontsJsonManager instance;
 		return instance;
 	}
+	typedef enum {JSON_OK, JSON_READ_ERR, JSON_SD_ERR, JSON_KEY_ERR} Json_FontsStatus;
 
+	Json_FontsStatus getJsonFontsStatus();
 	void findFontToCreate(uint8_t width, uint8_t height);
 	void findFontToCreate(string name);
 	string getPath(uint8_t width, uint8_t height);
@@ -44,6 +36,18 @@ public:
 	uint8_t getWidth(string name);
 	uint8_t getHeight(string name);
 	string getName(string name);
+
+private:
+	FontsJsonManager();
+	struct FontsSettings{
+		std::string font;
+		uint8_t height;
+		uint8_t width;
+		string path;
+	};
+	FontsSettings actualFontSettings;
+	vector<FontsSettings> fontsSettings;
+	Json_FontsStatus json_fonts_status;
 };
 
 #endif /* SRC_FILEMANAGER_FONTSJSONMANAGER_H_ */
