@@ -11,7 +11,7 @@ JsonManager::JsonManager() {
 	// TODO Auto-generated constructor stub
 	char* path = "FontsJson.json";
 	char* read_data;
-	uint8_t sd_status;
+	cardSD::SD_Status sd_status;
 	sd_status = cardSD::getInstance().readFile((char*)path, &read_data);
 	DeserializationError error = deserializeJson(doc, read_data);
 	delete (read_data);

@@ -46,7 +46,7 @@ private:
 	int buffer_width;
 	int buffer_height;
 	uint8_t buffor_element_height;
-	Fonts* actualFont;
+	Fonts* actualFont = nullptr;
 	vector<Fonts*> FontsAll;
 	bool ready;
 };

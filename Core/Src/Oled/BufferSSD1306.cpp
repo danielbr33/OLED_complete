@@ -21,6 +21,7 @@ uint8_t* BufferSSD1306::getBuffer(uint8_t sector){
 BufferSSD1306::BufferSSD1306(uint8_t buffer_width, uint8_t buffer_height){
 	this->buffer_height = buffer_height;
 	this->buffer_width = buffer_width;
+	actualFont = nullptr;
 	table = new uint8_t* [this->buffer_height / BUFFOR_PART_HEIGHT];
 	for (uint8_t i = 0; i < (this->buffer_height/BUFFOR_PART_HEIGHT); i++)
 		table[i] = new uint8_t[this->buffer_width];
@@ -40,6 +41,12 @@ BufferSSD1306::~BufferSSD1306(){
 
 void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
+	if(actualFont == nullptr){
+		if(findFont(width, height) == false){
+			createFont(width, height);
+			findFont(width, height);
+		}
+	}
 	if(actualFont->getWidth()!=width || actualFont->getHeight()!=height)
 		if(findFont(width, height) == false){
 			createFont(width, height);
@@ -91,6 +98,15 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 
 void BufferSSD1306::addLetter(uint8_t letter, string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
+	if(actualFont == nullptr){
+		if(findFont(name) == false){
+			if(name == defaultFont.name)
+				createDefaultFont();
+			else
+				createFont(name);
+			findFont(name);
+		}
+	}
 	if(actualFont->getName()!=name)
 		if(findFont(name) == false){
 			if(name == defaultFont.name)
@@ -147,6 +163,12 @@ void BufferSSD1306::addLetter(uint8_t letter, string name, Color color, uint8_t 
 
 void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
+	if(actualFont == nullptr){
+		if(findFont(width, height) == false){
+			createFont(width, height);
+			findFont(width, height);
+		}
+	}
 	if(actualFont->getWidth()!=width || actualFont->getHeight()!=height)
 		if(findFont(width, height) == false){
 			createFont(width, height);
@@ -161,6 +183,15 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 
 void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
+	if(actualFont == nullptr){
+		if(findFont(name) == false){
+			if(name==defaultFont.name)
+				createDefaultFont();
+			else
+				createFont(name);
+			findFont(name);
+		}
+	}
 	if(actualFont->getName()!=name)
 		if(findFont(name) == false){
 			if(name==defaultFont.name)
