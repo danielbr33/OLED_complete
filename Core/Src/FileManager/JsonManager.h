@@ -22,10 +22,11 @@ public:
 	}
 	StaticJsonDocument<1024>& getJsonDocument();
 	typedef enum {JSON_OK, JSON_ERROR, SD_ERROR} Json_Status;
+	Json_Status getJsonStatus();
 private:
 	JsonManager();
 	StaticJsonDocument<1024> doc;
-	uint8_t json_status;
+	Json_Status json_status;
 };
 
 #endif /* SRC_FILEMANAGER_JSONFONTS_H_ */
