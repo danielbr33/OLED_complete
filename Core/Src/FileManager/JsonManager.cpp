@@ -19,11 +19,13 @@ JsonManager::JsonManager() {
 		if(read_data!=nullptr)
 			delete(read_data);
 	}
-	DeserializationError error = deserializeJson(doc, read_data);
-	if (error){
-		json_status = JSON_ERROR;
-		if(read_data!=nullptr)
-			delete(read_data);
+	if(json_status == JSON_OK){
+		DeserializationError error = deserializeJson(doc, read_data);
+		if (error){
+			json_status = JSON_ERROR;
+			if(read_data!=nullptr)
+				delete(read_data);
+		}
 	}
 }
 
