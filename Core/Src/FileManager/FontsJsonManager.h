@@ -23,7 +23,8 @@ public:
 		static FontsJsonManager instance;
 		return instance;
 	}
-	typedef enum {JSON_OK, JSON_READ_ERR, JSON_SD_ERR, JSON_KEY_ERR} Json_FontsStatus;
+
+	typedef enum {JSON_OK, JSON_READ_ERR, JSON_SD_ERR, JSON_KEY_ERR, NO_FONT_ERROR} Json_FontsStatus;
 
 	Json_FontsStatus getJsonFontsStatus();
 	void findFontToCreate(uint8_t width, uint8_t height);

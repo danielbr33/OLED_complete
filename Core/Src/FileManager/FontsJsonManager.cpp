@@ -9,7 +9,6 @@
 
 FontsJsonManager::FontsJsonManager() {
 	// TODO Auto-generated constructor stub
-	DynamicJsonDocument doc(1024);
 	json_fonts_status = JSON_OK;
 	if(JsonManager::getInstance().getJsonStatus() == JsonManager::SD_ERROR){
 		json_fonts_status = JSON_SD_ERR;
@@ -72,42 +71,66 @@ void FontsJsonManager::findFontToCreate(string name){
 
 string FontsJsonManager::getPath(uint8_t width, uint8_t height){
 	findFontToCreate(width, height);
-	return actualFontSettings.path;
+	if(&actualFontSettings.path)
+		return actualFontSettings.path;
+	else
+		return "NO_FONT";
 }
 
 uint8_t FontsJsonManager::getWidth(uint8_t width, uint8_t height){
 	findFontToCreate(width, height);
-	return actualFontSettings.width;
+	if (&actualFontSettings.width)
+		return actualFontSettings.width;
+	else
+		return NO_FONT_ERROR;
 }
 
 uint8_t FontsJsonManager::getHeight(uint8_t width, uint8_t height){
 	findFontToCreate(width, height);
-	return actualFontSettings.height;
+	if (&actualFontSettings.height)
+		return actualFontSettings.height;
+	else
+		return NO_FONT_ERROR;
 }
 
 string FontsJsonManager::getName(uint8_t width, uint8_t height){
 	findFontToCreate(width, height);
-	return actualFontSettings.font;
+	if (&actualFontSettings.font)
+		return actualFontSettings.font;
+	else
+		return "NO_FONT";
 }
 
 string FontsJsonManager::getPath(string name){
 	findFontToCreate(name);
-	return actualFontSettings.path;
+	if(&actualFontSettings.path)
+		return actualFontSettings.path;
+	else
+		return "NO_FONT";
 }
 
 uint8_t FontsJsonManager::getWidth(string name){
 	findFontToCreate(name);
-	return actualFontSettings.width;
+	if (&actualFontSettings.width)
+		return actualFontSettings.width;
+	else
+		return NO_FONT_ERROR;
 }
 
 uint8_t FontsJsonManager::getHeight(string name){
 	findFontToCreate(name);
-	return actualFontSettings.height;
+	if (&actualFontSettings.height)
+		return actualFontSettings.height;
+	else
+		return NO_FONT_ERROR;
 }
 
 string FontsJsonManager::getName(string name){
 	findFontToCreate(name);
-	return actualFontSettings.font;
+	if (&actualFontSettings.font)
+		return actualFontSettings.font;
+	else
+		return "NO_FONT";
 }
 
 

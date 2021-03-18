@@ -212,10 +212,30 @@ void BufferSSD1306::createFont(uint8_t width, uint8_t height) {
 	uint8_t width_to_see;
 	uint8_t height_to_see;
 	string name_temp;
-	path = (char*)((FontsJsonManager::getInstance().getPath(width,  height)).c_str());
-	width_to_see = FontsJsonManager::getInstance().getWidth(width,  height);
-	height_to_see = FontsJsonManager::getInstance().getHeight(width,  height);
-	name_temp = FontsJsonManager::getInstance().getName(width,  height);
+
+	bool fonts_ready = true;
+	fonts_ready = checkJsonStatus();
+
+	if(fonts_ready == true){
+		path = (char*)((FontsJsonManager::getInstance().getPath(width,  height)).c_str());
+		if (path == "NO_FONT")
+			fonts_ready = false;
+		width_to_see = FontsJsonManager::getInstance().getWidth(width,  height);
+		if (width_to_see == FontsJsonManager::NO_FONT_ERROR)
+			fonts_ready = false;
+		height_to_see = FontsJsonManager::getInstance().getHeight(width,  height);
+		if (height_to_see == FontsJsonManager::NO_FONT_ERROR)
+			fonts_ready = false;
+		name_temp = FontsJsonManager::getInstance().getName(width,  height);
+		if (name_temp == "NO_FONT")
+			fonts_ready = false;
+	}
+
+	if(fonts_ready == false){
+		if(findFont(defaultFont.name) == false)
+			createDefaultFont();
+		return;
+	}
 	actualFont = new Fonts(width, height, width_to_see, height_to_see, name_temp);
 	actualFont->createFont(path);
 	FontsAll.push_back(new Fonts(*actualFont));
@@ -227,10 +247,30 @@ void BufferSSD1306::createFont(string name) {
 	uint8_t width_to_see;
 	uint8_t height_to_see;
 	string name_temp;
-	path = (char*)((FontsJsonManager::getInstance().getPath(name)).c_str());
-	width_to_see = FontsJsonManager::getInstance().getWidth(name);
-	height_to_see = FontsJsonManager::getInstance().getHeight(name);
-	name_temp = FontsJsonManager::getInstance().getName(name);
+
+	bool fonts_ready = true;
+	fonts_ready = checkJsonStatus();
+
+	if(fonts_ready == true){
+		path = (char*)((FontsJsonManager::getInstance().getPath(name)).c_str());
+		if (path == "NO_FONT")
+			fonts_ready = false;
+		width_to_see = FontsJsonManager::getInstance().getWidth(name);
+		if (width_to_see == FontsJsonManager::NO_FONT_ERROR)
+			fonts_ready = false;
+		height_to_see = FontsJsonManager::getInstance().getHeight(name);
+		if (height_to_see == FontsJsonManager::NO_FONT_ERROR)
+			fonts_ready = false;
+		name_temp = FontsJsonManager::getInstance().getName(name);
+		if (name_temp == "NO_FONT")
+			fonts_ready = false;
+	}
+
+	if(fonts_ready == false){
+		if(findFont(defaultFont.name) == false)
+			createDefaultFont();
+		return;
+	}
 	if(name_temp == name){
 		actualFont = new Fonts(width_to_see, height_to_see, width_to_see, height_to_see, name);
 		actualFont->createFont(path);
@@ -246,24 +286,40 @@ void BufferSSD1306::createDefaultFont(){
 	delete actualFont;
 }
 
-uint8_t BufferSSD1306::findFont(uint8_t width, uint8_t height) {
+bool BufferSSD1306::checkJsonStatus(){
+	FontsJsonManager::Json_FontsStatus status;
+	status = FontsJsonManager::getInstance().getJsonFontsStatus();
+	uint8_t coordX = 2;
+	uint8_t coordY = buffer_height - 10;
+	if (status == FontsJsonManager::JSON_KEY_ERR)
+		addText((char*)"No font key in json", defaultFont.name, Black, coordX, coordY);
+	if (status == FontsJsonManager::JSON_READ_ERR)
+		addText((char*)"ERROR reading json file", defaultFont.name, Black, coordX, coordY);
+	if (status == FontsJsonManager::JSON_SD_ERR)
+		addText((char*)"ERROR reading SD card", defaultFont.name, Black, coordX, coordY);
+	if (status == FontsJsonManager::JSON_OK)
+		return true;
+	return false;
+}
+
+bool BufferSSD1306::findFont(uint8_t width, uint8_t height) {
 	for (uint8_t i = 0; i < FontsAll.size(); i++) {
 		if (FontsAll[i]->getHeight() == height  &&  FontsAll[i]->getWidth() == width) {
 			actualFont = FontsAll[i];
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
-uint8_t BufferSSD1306::findFont(string name) {
+bool BufferSSD1306::findFont(string name) {
 	for (uint8_t i = 0; i < FontsAll.size(); i++) {
 		if (FontsAll[i]->getName() == name) {
 			actualFont = FontsAll[i];
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 void BufferSSD1306::operateWhiteTableValue(uint8_t x, uint8_t y, uint8_t value){
