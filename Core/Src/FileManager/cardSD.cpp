@@ -33,7 +33,7 @@ cardSD::SD_Status cardSD::readFile(char* path, char** read_data){
 		return SD_ERROR;
 	fresult = f_stat (path, &fno);
 	if(fresult != FR_OK)
-		return SD_ERROR;
+		return SD_ERROR_READ;
 	fresult = f_open(&fil, path, FA_READ);		/* Open file to read */
 	if(fresult != FR_OK)
 		return SD_ERROR_READ;

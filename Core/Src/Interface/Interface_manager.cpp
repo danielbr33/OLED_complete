@@ -49,6 +49,10 @@ void Interface_manager::display(){
             if( Ssd_1306->isVisibleValue() ){
             	char temp[15];
             	sprintf(temp, "%d", Ssd_1306->getParameterValue());
+            	uint8_t size = sizeof(Ssd_1306->getParameterValue());
+            	string unit =  Ssd_1306->getParameterUnit();
+            	char* unitc = (char*)unit.c_str();
+            	sprintf(&temp[size], "%c", unitc);
         		oled->writeString( temp, 7, 10, BufferSSD1306::White, 2, 17);
             }
             else{
