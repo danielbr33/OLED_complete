@@ -28,6 +28,9 @@
 /* USER CODE BEGIN Includes */
 #include "Oled/SSD1306.h"
 #include "Interface/Interface_manager.h"
+#include "spi.h"
+#include "i2c.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,10 +50,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-extern Interface_manager* Interface1;
-extern Interface_manager* Interface2;
-extern SSD1306* oled;
-extern SSD1306* oled2;
+SSD1306* oled;
+SSD1306* oled2;
 
 /**** capacity related *****/
 /* USER CODE END Variables */
@@ -158,6 +159,7 @@ void StartDefaultTask(void const * argument)
 void StartOledTask(void const * argument)
 {
   /* USER CODE BEGIN StartOledTask */
+
   /* Infinite loop */
   for(;;)
   {
@@ -179,6 +181,49 @@ void StartInterfaceTask(void const * argument)
 {
   /* USER CODE BEGIN StartInterfaceTask */
   /* Infinite loop */
+	Interface_manager* Interface1;
+	Interface_manager* Interface2;
+
+	SSD1306::gpio_struct  gpio_reset;
+	gpio_reset.port = OLED_RESET_GPIO_Port;
+	gpio_reset.pin= OLED_RESET_Pin;
+
+	SSD1306::gpio_struct gpio_dc;
+	gpio_dc.port = OLED_DC_GPIO_Port;
+	gpio_dc.pin = OLED_DC_Pin;
+
+	SSD1306::gpio_struct gpio_cs;
+	gpio_cs.port = OLED_CS_GPIO_Port;
+	gpio_cs.pin = OLED_CS_Pin;
+
+	SSD1306::OledSettingsSPI oledSpiSettings;
+	oledSpiSettings.cs.port = OLED_CS_GPIO_Port;
+	oledSpiSettings.cs.pin = OLED_CS_Pin;
+
+	oledSpiSettings.reset.port = OLED_RESET_GPIO_Port;
+	oledSpiSettings.reset.pin = OLED_RESET_Pin;
+
+	oledSpiSettings.dc.port = OLED_DC_GPIO_Port;
+	oledSpiSettings.dc.pin = OLED_DC_Pin;
+
+	oledSpiSettings.hspi = &hspi1;
+
+	SSD1306::OledSettingsI2C i2c_settings;
+	i2c_settings.address = 0x3C<<1;
+	i2c_settings.hi2c = &hi2c1;
+
+
+	oled = new SSD1306(oledSpiSettings);
+	oled2 = new SSD1306(i2c_settings);
+
+	oled->changeDMA(SSD1306::SET_ON);
+	oled->init();
+	HAL_Delay(5);
+	oled2->changeDMA(SSD1306::SET_ON);
+	oled2->init();
+	HAL_Delay(5);
+	Interface1=new Interface_manager(&huart3, oled);
+	Interface2=new Interface_manager(&huart3, oled2);
   for(;;)
   {
 	Interface2->interrupt();

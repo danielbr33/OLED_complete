@@ -51,10 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-SSD1306* oled;
-SSD1306* oled2;
-Interface_manager* Interface1;
-Interface_manager* Interface2;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,40 +74,6 @@ int main(void)
 {
 	/* USER CODE BEGIN 1 */
 
-	SSD1306::gpio_struct  gpio_reset;
-	gpio_reset.port = OLED_RESET_GPIO_Port;
-	gpio_reset.pin= OLED_RESET_Pin;
-
-	SSD1306::gpio_struct gpio_dc;
-	gpio_dc.port = OLED_DC_GPIO_Port;
-	gpio_dc.pin = OLED_DC_Pin;
-
-	SSD1306::gpio_struct gpio_cs;
-	gpio_cs.port = OLED_CS_GPIO_Port;
-	gpio_cs.pin = OLED_CS_Pin;
-
-	SSD1306::OledSettingsSPI oledSpiSettings;
-	oledSpiSettings.cs.port = OLED_CS_GPIO_Port;
-	oledSpiSettings.cs.pin = OLED_CS_Pin;
-
-	oledSpiSettings.reset.port = OLED_RESET_GPIO_Port;
-	oledSpiSettings.reset.pin = OLED_RESET_Pin;
-
-	oledSpiSettings.dc.port = OLED_DC_GPIO_Port;
-	oledSpiSettings.dc.pin = OLED_DC_Pin;
-
-	oledSpiSettings.hspi = &hspi1;
-
-	SSD1306::OledSettingsI2C i2c_settings;
-	i2c_settings.address = 0x3C<<1;
-	i2c_settings.hi2c = &hi2c1;
-
-
-	oled = new SSD1306(oledSpiSettings);
-	oled2 = new SSD1306(i2c_settings);
-
-	Interface1=new Interface_manager(&huart3, oled);
-	Interface2=new Interface_manager(&huart3, oled2);
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -138,12 +101,6 @@ int main(void)
 	MX_I2C1_Init();
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
-	oled->changeDMA(SSD1306::SET_ON);
-	oled->init();
-	HAL_Delay(5);
-	oled2->changeDMA(SSD1306::SET_ON);
-	oled2->init();
-	HAL_Delay(1000);
 	uint8_t i=0;
 
 	/* USER CODE END 2 */
