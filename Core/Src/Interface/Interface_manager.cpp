@@ -1,5 +1,6 @@
 #include "Interface_manager.h"
 #include "usart.h"
+#include "string"
 #define BUTTON_1 'a' // left
 #define BUTTON_2 'd' // right
 #define BUTTON_3 's'// down
@@ -47,13 +48,17 @@ void Interface_manager::display(){
     	oled->writeString( (char*)Ssd_1306->getParameterHeadline().c_str(), 7, 10, BufferSSD1306::White, 2, 2);
         if( !(Ssd_1306->isBackFromSubListParameter()) && !(Ssd_1306->hasSubList()) ){
             if( Ssd_1306->isVisibleValue() ){
-            	char temp[15];
-            	sprintf(temp, "%d", Ssd_1306->getParameterValue());
-            	uint8_t size = sizeof(Ssd_1306->getParameterValue());
-            	string unit =  Ssd_1306->getParameterUnit();
-            	char* unitc = (char*)unit.c_str();
-            	sprintf(&temp[size], "%c", unitc);
-        		oled->writeString( temp, 7, 10, BufferSSD1306::White, 2, 17);
+//            	char value;
+//            	value = Ssd_1306->getParameterValue();
+//            	string unit =  Ssd_1306->getParameterUnit();
+//            	char* text = new char(sizeof(value) + unit.length());
+//            	memcpy(text, &value, sizeof(value));
+//            	memcpy(&text[sizeof(value)], unit.c_str(), unit.length());
+//        		oled->writeString( text, 7, 10, BufferSSD1306::White, 2, 17);
+            	uint16_t value = Ssd_1306->getParameterValue();
+            	string unit = Ssd_1306->getParameterUnit();
+            	string text = to_string(value) + unit;
+            	oled->writeString((char*)text.c_str(), 7, 10, BufferSSD1306::White, 2,17);
             }
             else{
                 for( uint16_t i = (Ssd_1306->getParameterValue() )*10 ; i > 0 ; i /= 10)
