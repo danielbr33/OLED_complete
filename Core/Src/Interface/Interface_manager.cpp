@@ -11,6 +11,11 @@ Interface_manager::Interface_manager(UART_HandleTypeDef* huart, SSD1306* oled){
     Ssd_1306 = new Interface ;
     uart_interface=huart;
     this->oled=oled;
+    errors = new ErrorsOLED();
+}
+
+ErrorsOLED* Interface_manager::getErrorObject(){
+	return this->errors;
 }
 
 void Interface_manager::init(){

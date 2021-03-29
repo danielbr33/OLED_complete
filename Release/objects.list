@@ -1,6 +1,7 @@
 "Core/Src/FileManager/FontsJsonManager.o"
 "Core/Src/FileManager/JsonManager.o"
 "Core/Src/FileManager/cardSD.o"
+"Core/Src/Interface/ErrorsOLED.o"
 "Core/Src/Interface/Interface.o"
 "Core/Src/Interface/Interface_manager.o"
 "Core/Src/Interface/List.o"
