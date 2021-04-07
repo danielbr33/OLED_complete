@@ -40,6 +40,9 @@ BufferSSD1306::~BufferSSD1306(){
 }
 
 void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+#ifdef DEFAULT_MODE
+	addLetter(letter, defaultFont.name, color, coord_X, coord_Y);
+#else
 	ready = false;
 	if(actualFont == nullptr){
 		if(findFont(width, height) == false){
@@ -94,16 +97,21 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 		}
 	}
 	ready = true;
+#endif
 }
 
 void BufferSSD1306::addLetter(uint8_t letter, string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
+	#ifdef DEFAULT_MODE
+	name = defaultFont.name;
+	#endif
 	if(actualFont == nullptr){
 		if(findFont(name) == false){
 			if(name == defaultFont.name)
 				createDefaultFont();
-			else
+			else{
 				createFont(name);
+			}
 			findFont(name);
 		}
 	}
@@ -160,8 +168,10 @@ void BufferSSD1306::addLetter(uint8_t letter, string name, Color color, uint8_t 
 	ready = true;
 }
 
-
 void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+#ifdef DEFAULT_MODE
+	addText(text, defaultFont.name, color, coord_X, coord_Y);
+#else
 	ready = false;
 	if(actualFont == nullptr){
 		if(findFont(width, height) == false){
@@ -179,10 +189,14 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 		addLetter(text[i], width, height, color, current_X, coord_Y);
 	}
 	ready = true;
+#endif
 }
 
 void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	ready = false;
+	#ifdef DEFAULT_MODE
+	name = defaultFont.name;
+	#endif
 	if(actualFont == nullptr){
 		if(findFont(name) == false){
 			if(name==defaultFont.name)
@@ -208,6 +222,9 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 }
 
 void BufferSSD1306::createFont(uint8_t width, uint8_t height) {
+#ifdef DEFAULT_MODE
+	createFont(defaultFont.name);
+#else
 	char* path;
 	uint8_t width_to_see;
 	uint8_t height_to_see;
@@ -240,15 +257,22 @@ void BufferSSD1306::createFont(uint8_t width, uint8_t height) {
 	actualFont->createFont(path);
 	FontsAll.push_back(new Fonts(*actualFont));
 	delete actualFont;
+#endif
 }
 
+
 void BufferSSD1306::createFont(string name) {
+#ifdef DEFAULT_MODE
+	name = defaultFont.name;
+#endif
 	char* path;
 	uint8_t width_to_see;
 	uint8_t height_to_see;
 	string name_temp;
 
-	bool fonts_ready = true;
+	bool fonts_ready = false;
+#ifndef DEFAULT_MODE
+	// TODO: Przyjrzec sie
 	fonts_ready = checkJsonStatus();
 
 	if(fonts_ready == true){
@@ -265,6 +289,7 @@ void BufferSSD1306::createFont(string name) {
 		if (name_temp == "NO_FONT")
 			fonts_ready = false;
 	}
+#endif
 
 	if(fonts_ready == false){
 		if(findFont(defaultFont.name) == false)
@@ -286,6 +311,7 @@ void BufferSSD1306::createDefaultFont(){
 	delete actualFont;
 }
 
+#ifndef DEFAULT_MODE
 bool BufferSSD1306::checkJsonStatus(){
 	FontsJsonManager::Json_FontsStatus status;
 	status = FontsJsonManager::getInstance().getJsonFontsStatus();
@@ -301,7 +327,9 @@ bool BufferSSD1306::checkJsonStatus(){
 		return true;
 	return false;
 }
+#endif
 
+#ifndef DEFAULT_MODE
 bool BufferSSD1306::findFont(uint8_t width, uint8_t height) {
 	for (uint8_t i = 0; i < FontsAll.size(); i++) {
 		if (FontsAll[i]->getHeight() == height  &&  FontsAll[i]->getWidth() == width) {
@@ -311,6 +339,7 @@ bool BufferSSD1306::findFont(uint8_t width, uint8_t height) {
 	}
 	return false;
 }
+#endif
 
 bool BufferSSD1306::findFont(string name) {
 	for (uint8_t i = 0; i < FontsAll.size(); i++) {

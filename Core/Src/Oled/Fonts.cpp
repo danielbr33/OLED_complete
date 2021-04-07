@@ -15,12 +15,14 @@ void Fonts::createDefaultFont(){
 	}
 }
 
+#ifndef DEFAULT_MODE
 void Fonts::createFont(const char* path) {
 	char* read_data;
 	cardSD::getInstance().readFile((char*)path, &read_data) != cardSD::SD_OK;
 	createObjects(read_data);
 	delete(read_data);
 }
+#endif
 
 void Fonts::createObjects(char* data){
 	uint16_t counter = 0;

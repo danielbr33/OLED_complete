@@ -3,9 +3,15 @@
 #ifndef FONTS_H
 #define FONTS_H
 
+#ifndef DEFAULT_MODE
+#define DEFAULT_MODE
+#endif
+
 #include "Letter.h"
 #include "bitoperations.h"
+#ifndef DEFAULT_MODE
 #include "cardSD.h"
+#endif
 #include "string.h"
 #include "defaultFont.h"
 
@@ -17,7 +23,9 @@ class Fonts{
 
 public:
 	Fonts(uint8_t width, uint8_t height, uint8_t width_real, uint8_t height_real, string name);
+#ifndef DEFAULT_MODE
 	void createFont(const char* path);  /*finding font in SD and  createObjects() */
+#endif
 	void createObjects(char* data);  /*creates objects of fonts which are actually used*/
 	void createDefaultFont();
 	uint32_t* getLetter(uint8_t letter);  /*return pointer to table of letter written as pixels in collumn*/
