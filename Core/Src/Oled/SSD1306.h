@@ -13,7 +13,7 @@
 #ifndef __SSD1306_H__
 #define __SSD1306_H__
 
-#include <BufferSSD1306.h>
+#include "BufferSSD1306.h"
 
 //To nie wiem czy ty robiles ale tez ładnie zrobione, ze gdyby ktos chciał skompilowac na innym procku dostanie info ze moze nie działać w pełni i sam musi przetestować, lekko bym to zmodyfikował ale opowiem o tym na nastepynm spotkaniu
 #define STM32F4

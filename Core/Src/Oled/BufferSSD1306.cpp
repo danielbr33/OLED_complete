@@ -1,4 +1,4 @@
-#include <BufferSSD1306.h>
+#include "BufferSSD1306.h"
 
 void BufferSSD1306::fill(Color color) {
 	ready = false;
@@ -296,12 +296,14 @@ void BufferSSD1306::createFont(string name) {
 			createDefaultFont();
 		return;
 	}
+#ifndef DEFAULT_MODE
 	if(name_temp == name){
 		actualFont = new Fonts(width_to_see, height_to_see, width_to_see, height_to_see, name);
 		actualFont->createFont(path);
 		FontsAll.push_back(new Fonts(*actualFont));
 		delete actualFont;
 	}
+#endif
 }
 
 void BufferSSD1306::createDefaultFont(){
