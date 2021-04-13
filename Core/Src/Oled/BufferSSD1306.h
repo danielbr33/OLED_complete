@@ -4,7 +4,7 @@
 #ifndef BUFFERSSD1306_H_
 #define BUFFERSSD1306_H_
 
-#define DEFAULT_MODE
+//#define DEFAULT_MODE
 
 #include "Fonts.h"
 #include <vector>

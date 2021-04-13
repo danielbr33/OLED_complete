@@ -15,26 +15,6 @@
 
 #include "BufferSSD1306.h"
 
-//To nie wiem czy ty robiles ale tez ładnie zrobione, ze gdyby ktos chciał skompilowac na innym procku dostanie info ze moze nie działać w pełni i sam musi przetestować, lekko bym to zmodyfikował ale opowiem o tym na nastepynm spotkaniu
-#define STM32F4
-#if defined(STM32F1)
-#include "stm32f1xx_hal.h"
-#elif defined(STM32F4)
-#include "stm32f4xx_hal.h"
-#elif defined(STM32L0)
-#include "stm32l0xx_hal.h"
-#elif defined(STM32L4)
-#include "stm32l4xx_hal.h"
-#elif defined(STM32F3)
-#include "stm32f3xx_hal.h"
-#elif defined(STM32H7)
-#include "stm32h7xx_hal.h"
-#elif defined(STM32F7)
-#include "stm32f7xx_hal.h"
-#else
- #error "SSD1306 library was tested only on STM32F1, STM32F3, STM32F4, STM32F7, STM32L0, STM32L4, STM32H7 MCU families. Please modify ssd1306.h if you know what you are doing. Also please send a pull request if it turns out the library works on other MCU's as well!"
-#endif
-
 #define NUMBER_OF_COMMANDS_INIT  28
 #define NUMBER_OF_COMMANDS_DATA	3
 

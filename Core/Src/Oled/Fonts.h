@@ -3,9 +3,9 @@
 #ifndef FONTS_H
 #define FONTS_H
 
-#ifndef DEFAULT_MODE
-#define DEFAULT_MODE
-#endif
+//#ifndef DEFAULT_MODE
+//#define DEFAULT_MODE
+//#endif
 
 #include "Letter.h"
 #include "bitoperations.h"
