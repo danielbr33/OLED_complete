@@ -27,6 +27,7 @@
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
+#include "tim.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -137,6 +138,7 @@ int main(void)
 	MX_FATFS_Init();
 	MX_I2C1_Init();
 	MX_SPI1_Init();
+	MX_TIM1_Init();
 	/* USER CODE BEGIN 2 */
 	oled->changeDMA(SSD1306::SET_ON);
 	oled->init();
@@ -144,6 +146,8 @@ int main(void)
 	oled2->changeDMA(SSD1306::SET_ON);
 	oled2->init();
 	HAL_Delay(1000);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	TIM1->CCR1 = 99;
 	uint8_t i=0;
 
 	/* USER CODE END 2 */

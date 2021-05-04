@@ -51,6 +51,15 @@ void Interface_manager::display(){
     }
     else{
     	oled->writeString( (char*)Ssd_1306->getParameterHeadline().c_str(), 7, 10, BufferSSD1306::White, 2, 2);
+    	const char* tekst = Ssd_1306->getParameterHeadline().c_str();
+    	if(strcmp(Ssd_1306->getParameterHeadline().c_str(), "P") == 0){
+    		uint8_t b = Ssd_1306->getParameterValue();
+    		if(b<0)
+    			b=0;
+    		if(b>100)
+    			b=100;
+    		TIM1->CCR1 = (b-20)*10;
+    	}
         if( !(Ssd_1306->isBackFromSubListParameter()) && !(Ssd_1306->hasSubList()) ){
             if( Ssd_1306->isVisibleValue() ){
 //            	char value;
