@@ -1,0 +1,10 @@
+#ifndef INTERFACE_INPUT_H_
+#define INTERFACE_INPUT_H_
+
+class InterfaceInput {
+public:
+	enum Button{LEFT_BUTTON, ENTER_BUTTON, RIGHT_BUTTON, OTHER_BUTTON};
+	enum Action{DO_NOTHING, PRINT, ERROR_NO_CHANGEABLE, MOVE_RIGHT , MOVE_LEFT , SET_OUT_OF_SUB_LIST};
+};
+
+#endif 

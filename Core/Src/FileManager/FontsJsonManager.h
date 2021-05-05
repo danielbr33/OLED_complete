@@ -6,7 +6,7 @@
  */
 #include <vector>
 #include <cardSD.h>
-#include <ArduinoJson-v6.15.2.h>
+#include <ArduinoJson-v6.17.3.h>
 #include <JsonManager.h>
 
 #ifndef SRC_FILEMANAGER_FONTSJSONMANAGER_H_
@@ -48,7 +48,7 @@ private:
 	};
 	FontsSettings actualFontSettings;
 	vector<FontsSettings> fontsSettings;
-	Json_FontsStatus json_fonts_status;
+	Json_FontsStatus jsonFontsStatus;
 };
 
 #endif /* SRC_FILEMANAGER_FONTSJSONMANAGER_H_ */

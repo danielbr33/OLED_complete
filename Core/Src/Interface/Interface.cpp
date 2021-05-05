@@ -1,70 +1,44 @@
 #include "Interface.h"
-Interface::Interface(){
 
-	list_of_elements = new List();
-
-	list_of_elements->addParameter(new Parameter("U battery" , 7.4 , "V", 0 )) ;
-	list_of_elements->addParameter(new Parameter("Work time" , 2 , "h", 1)) ;
-	list_of_elements->addParameter(new Parameter("Distance" , 100 , "m", 1)) ;
-	list_of_elements->addParameter(new Parameter("En consumed" , 3 , "kWh", 0)) ;
-	list_of_elements->addParameter(new Parameter("Temperature" , 20 , "C" , 0)) ;
-
-	Parameter *pid = new Parameter("pid", 3, "P I D", 0);
-	pid->addToSubList(new Parameter("P" , 20 , "kp" , 1));
-	pid->addToSubList(new Parameter("I" , 20 , "ki" , 1));
-	pid->addToSubList(new Parameter("D" , 20 , "kd" , 1));
-	list_of_elements->addParameter(pid);
+Interface::Interface() {
+    loadInterface();
 }
 
-void Interface::sendAction(Interface_Element::Button button){
-
-	Interface_Element::Action action = list_of_elements->getParameter()->getButton(button);
-
-	switch(action){
-        case Interface_Element::ERROR_NO_CHANGEABLE:
-            displayError() ;
-            break ;
-
-        case Interface_Element::MOVE_LEFT :
-            list_of_elements->moveLeft() ;
-            break ;
-
-        case Interface_Element::MOVE_RIGHT:
-            list_of_elements->moveRight();
-            break ;
-
-        case Interface_Element::SET_OUT_OF_SUB_LIST:
-            list_of_elements->setOutOfSubList() ;
-            break ;
-	}
-}
-void Interface::displayError(){
-    list_of_elements->getParameter()->sendErrorNoChangeable() ;
+Interface::Interface(std::string interfaceFilepath) {
+    this->interfaceFilepath = interfaceFilepath;
+    loadInterface();
 }
 
-void Interface::refresh(){
-    list_of_elements->getParameter()->refreshEditMode() ;
-    list_of_elements->getParameter()->refreshNoChangeableError() ;
+void Interface::loadInterface() {
+    mainMenuItem = InterfaceBuilder::loadInterFaceFromJsonFile(interfaceFilepath);
+    if (mainMenuItem == nullptr) {
+        mainMenuItem = InterfaceBuilder::loadDefaultInterFace();
+    }
 }
 
-uint8_t Interface::isNoChangeableErrorCounting(){
-    return list_of_elements->getParameter()->isCountingNoChangeableError() ;
+void Interface::setInterfaceFilepath(std::string filepath) {
+    this->interfaceFilepath = filepath;
 }
-string Interface::getParameterHeadline(){
-    return list_of_elements->getParameter()->getHeadLine() ;
+std::string Interface::getInterfaceFilepath() {
+    return interfaceFilepath;
 }
-uint8_t Interface::isBackFromSubListParameter(){
-    return list_of_elements->getParameter()->isBackParameter() ;
+
+void Interface::setInputEvent(InterfaceInput::Button event) {
+    mainMenuItem->getCurrentMenuItem()->setInputEvent(event);
 }
-uint8_t Interface::hasSubList(){
-    return list_of_elements->getParameter()->ifHasSubList() ;
+
+MenuItem* Interface::getCurrentMenuItem() {
+    return mainMenuItem->getCurrentMenuItem();
 }
-uint8_t Interface::isVisibleValue(){
-    return list_of_elements->getParameter()->isValueVisible();
+
+MenuItem* Interface::getMenuItemByName(std::string name) {
+    return mainMenuItem->getMenuItemByName(name);
 }
-uint16_t Interface::getParameterValue(){
-    return list_of_elements->getParameter()->getValue() ;
+
+Action* Interface::getActionByName(std::string name) {
+    return (Action*)mainMenuItem->getMenuItemByName(name, MenuItem::ACTION);
 }
-string Interface::getParameterUnit(){
-    return list_of_elements->getParameter()->getUnit() ;
+
+void Interface::save() {
+    InterfaceBuilder::saveInterfaceToFile(mainMenuItem, interfaceFilepath);
 }

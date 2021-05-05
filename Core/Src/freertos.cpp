@@ -27,7 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Oled/SSD1306.h"
-#include "Interface/Interface_manager.h"
+#include "Interface/InterfaceManager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,9 +47,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-extern Interface_manager* Interface1;
-extern Interface_manager* Interface2;
-extern SSD1306* oled;
+extern InterfaceManager* Interface2;
 extern SSD1306* oled2;
 
 /**** capacity related *****/
@@ -181,8 +179,7 @@ void StartInterfaceTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	Interface2->interrupt();
-    osDelay(100);
+	  InterfaceManager(&huart3, oled2);
   }
   /* USER CODE END StartInterfaceTask */
 }
