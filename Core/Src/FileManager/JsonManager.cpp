@@ -9,7 +9,14 @@
 
 JsonManager::JsonManager() {
 	// TODO Auto-generated constructor stub
-	char* path = "FontsJson.json";
+}
+
+JsonManager::~JsonManager() {
+	// TODO Auto-generated destructor stub
+}
+
+JsonManager::Json_Status JsonManager::getJsonDocument(char *path, StaticJsonDocument<1024> doc){
+	Json_Status json_status;
 	char* read_data = nullptr;
 	cardSD::SD_Status sd_status;
 	json_status = JSON_OK;
@@ -18,6 +25,7 @@ JsonManager::JsonManager() {
 		json_status = SD_ERROR;
 		if(read_data!=nullptr)
 			delete(read_data);
+		return json_status;
 	}
 	if(json_status == JSON_OK){
 		DeserializationError error = deserializeJson(doc, read_data);
@@ -25,18 +33,9 @@ JsonManager::JsonManager() {
 			json_status = JSON_ERROR;
 			if(read_data!=nullptr)
 				delete(read_data);
+			return json_status;
 		}
 	}
-}
-
-JsonManager::Json_Status JsonManager::getJsonStatus(){
+	delete (read_data);
 	return json_status;
-}
-
-JsonManager::~JsonManager() {
-	// TODO Auto-generated destructor stub
-}
-
-StaticJsonDocument<1024>& JsonManager::getJsonDocument(){
-	return doc;
 }

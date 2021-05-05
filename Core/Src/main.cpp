@@ -32,7 +32,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Oled/SSD1306.h"
-#include "Interface/Interface_manager.h"
+#include "Interface/InterfaceManager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,10 +52,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-SSD1306* oled;
 SSD1306* oled2;
-Interface_manager* Interface1;
-Interface_manager* Interface2;
+InterfaceManager* Interface2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,12 +104,8 @@ int main(void)
 	i2c_settings.address = 0x3C<<1;
 	i2c_settings.hi2c = &hi2c1;
 
-
-	oled = new SSD1306(oledSpiSettings);
 	oled2 = new SSD1306(i2c_settings);
-
-	Interface1=new Interface_manager(&huart3, oled);
-	Interface2=new Interface_manager(&huart3, oled2);
+	Interface2=new InterfaceManager(&huart3, oled2);
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -140,9 +134,6 @@ int main(void)
 	MX_SPI1_Init();
 	MX_TIM1_Init();
 	/* USER CODE BEGIN 2 */
-	oled->changeDMA(SSD1306::SET_ON);
-	oled->init();
-	HAL_Delay(5);
 	oled2->changeDMA(SSD1306::SET_ON);
 	oled2->init();
 	HAL_Delay(1000);

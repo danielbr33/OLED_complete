@@ -4,7 +4,7 @@
  *  Created on: 15 lut 2021
  *      Author: danie
  */
-#include "ArduinoJson-v6.15.2.h"
+#include "ArduinoJson-v6.17.3.h"
 #include "Fonts.h"
 #include "dma.h"
 #include "fatfs.h"

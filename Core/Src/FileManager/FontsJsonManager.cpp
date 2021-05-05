@@ -9,16 +9,19 @@
 
 FontsJsonManager::FontsJsonManager() {
 	// TODO Auto-generated constructor stub
-	json_fonts_status = JSON_OK;
-	if(JsonManager::getInstance().getJsonStatus() == JsonManager::SD_ERROR){
-		json_fonts_status = JSON_SD_ERR;
+	StaticJsonDocument<1024> document;
+	jsonFontsStatus = JSON_OK;
+	JsonManager::Json_Status jsonTempStatus;
+	jsonTempStatus = JsonManager::getInstance().getJsonDocument("FontsJson.json", document);
+	if(jsonTempStatus == JsonManager::SD_ERROR){
+		jsonFontsStatus = JSON_SD_ERR;
 	}
-	else if(JsonManager::getInstance().getJsonStatus() == JsonManager::JSON_ERROR){
-		json_fonts_status = JSON_READ_ERR;
+	else if(jsonTempStatus == JsonManager::JSON_ERROR){
+		jsonFontsStatus = JSON_READ_ERR;
 	}
-	else if(JsonManager::getInstance().getJsonStatus() == JsonManager::JSON_OK){
-		if(JsonManager::getInstance().getJsonDocument().containsKey("fonts")){
-			JsonArray array = JsonManager::getInstance().getJsonDocument()["fonts"];
+	else if(jsonTempStatus == JsonManager::JSON_OK){
+		if(document.containsKey("fonts")){
+			JsonArray array = document["fonts"];
 			for (JsonObject repo : array) {
 				if(repo.containsKey("font"))
 					actualFontSettings.font = repo["font"].as<string>();
@@ -33,12 +36,12 @@ FontsJsonManager::FontsJsonManager() {
 			}
 		}
 		else
-			json_fonts_status = JSON_KEY_ERR;
+			jsonFontsStatus = JSON_KEY_ERR;
 	}
 }
 
 FontsJsonManager::Json_FontsStatus FontsJsonManager::getJsonFontsStatus(){
-	return json_fonts_status;
+	return jsonFontsStatus;
 }
 
 FontsJsonManager::~FontsJsonManager() {

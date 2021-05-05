@@ -6,7 +6,7 @@
  */
 #include <vector>
 #include <cardSD.h>
-#include <ArduinoJson-v6.15.2.h>
+#include <ArduinoJson-v6.17.3.h>
 
 #ifndef SRC_FILEMANAGER_JSONFONTS_H_
 #define SRC_FILEMANAGER_JSONFONTS_H_
@@ -20,13 +20,10 @@ public:
 		static JsonManager instance;
 		return instance;
 	}
-	StaticJsonDocument<1024>& getJsonDocument();
 	typedef enum {JSON_OK, JSON_ERROR, SD_ERROR} Json_Status;
-	Json_Status getJsonStatus();
+	Json_Status getJsonDocument(char *path, StaticJsonDocument<1024> doc);
 private:
 	JsonManager();
-	StaticJsonDocument<1024> doc;
-	Json_Status json_status;
 };
 
 #endif /* SRC_FILEMANAGER_JSONFONTS_H_ */

@@ -1,157 +1,75 @@
 #include "Parameter.h"
-#include "List.h"
-#define EDIT_MODE_TIME 10
-#define ERROR_TIME 10
 
-Parameter::Parameter(string h, uint16_t v, string u , uint8_t ch ){
-	headline = h;
-	value = v ;
-	unit = u ;
-	changeable_value = ch;
-	edit_mode = false ;
+Parameter::Parameter(std::string name) : Value(name) {
+    type = MenuItem::PARAMTER;
 }
 
-List* Parameter::getSubList(){
-    if( has_sub_list)
-        return list ;
-}
-void Parameter::createList(){
-    list = new List();
-    has_sub_list = true;
-    list->addBackParameter() ;
+Parameter::Parameter(JsonObject jsonObject) : Value(jsonObject) {
+    type = MenuItem::PARAMTER;
+    parseParameterFromJsonObject(jsonObject);
 }
 
-void Parameter::addBackParameterToList(){
-    list->addBackParameter() ;
-}
-
-void Parameter::addToSubList(Parameter *p){
-	if( !has_sub_list)
-        createList() ;
-    list->addParameter(p) ;
-}
-
-uint8_t Parameter::ifHasSubList(){
-    return has_sub_list ;
-}
-
-uint8_t Parameter::ifInSubList(){
-    return in_sub_list ;
-}
-
-void Parameter::refreshEditMode(){
-    if(edit_mode){
-        edit_mode_counting++ ;
-        if(edit_mode_counting > EDIT_MODE_TIME){
-            edit_mode_counting = false ;
-            visible_value = !visible_value ;
-        }
-    }
-}
-
-void Parameter::refreshNoChangeableError(){
-    if(start_counting_no_changeable_error)
-        no_changeable_error_counting++ ;
-    if(no_changeable_error_counting > ERROR_TIME ){
-        no_changeable_error_counting = false ;
-        start_counting_no_changeable_error = false ;
-    }
-}
-
-void Parameter::sendErrorNoChangeable(){
-    start_counting_no_changeable_error = true ;
-}
-
-Parameter* Parameter::getParametr(){
-    if(has_sub_list && in_sub_list)
-        return list->getParameter();
-    else
-        return this ;
-}
-
-Interface_Element::Action Parameter::getButton(Interface_Element::Button button){
-
-    if( button == Interface_Element::ENTER){
-        if(edit_mode){
-                edit_mode = false ;
-                visible_value = true ;
-        }
-        else{
-            if(changeable_value){
-                edit_mode = true ;
-                visible_value = false ;
-                edit_mode_counting = false ;
+void Parameter::setInputEvent(InterfaceInput::Button event) {
+    switch (event) {
+        case InterfaceInput::LEFT_BUTTON:
+            decrementValue();
+            break;
+        case InterfaceInput::RIGHT_BUTTON:
+            incrementValue();
+            break;
+        case InterfaceInput::ENTER_BUTTON:
+            if (parentMenuItem != nullptr) {
+                parentMenuItem->setAsActiveItem();
             }
-            else if(has_sub_list){
-                 in_sub_list = true ;
-            }
-            else if(back_from_sub_list)
-                return Interface_Element::SET_OUT_OF_SUB_LIST ;
-            else
-                return Interface_Element::ERROR_NO_CHANGEABLE;
-        }
-        return Interface_Element::DO_NOTHING ;
-    }
-    else if(edit_mode) {
-        visible_value = true ;
-        edit_mode_counting = false ;
-		if(button == Interface_Element::RIGHT_BUTTON){
-			value++;
-			return Interface_Element::DO_NOTHING ;
-		}
-		else if(button == Interface_Element::LEFT_BUTTON){
-            value--;
-            return Interface_Element::DO_NOTHING ;
-		}
-    }
-    else if( button == Interface_Element::LEFT_BUTTON){
-        return Interface_Element::MOVE_LEFT ;
-    }
-    else if( button == Interface_Element::RIGHT_BUTTON){
-        return Interface_Element::MOVE_RIGHT ;
+            break;
+        case InterfaceInput::OTHER_BUTTON:
+            break;
     }
 }
 
-string Parameter::getHeadLine(){
-	return this->headline;
-}
-
-void Parameter::setOutOfSubList(){
-    in_sub_list = false ;
-    list->resetSubList() ;
-}
-
-void Parameter::newMove(Interface_Element::Action action){
-
-   if(action == Interface_Element::MOVE_RIGHT)
-        list->moveRight() ;
-    else if( action == Interface_Element::MOVE_LEFT)
-        list->moveLeft() ;
-}
-void Parameter::closeLastOpenSubList(){
-    if( in_sub_list ){
-        if( list->hasOpenSubList())
-            list->setOutOfSubList() ;
-        else
-          setOutOfSubList() ;
+void Parameter::decrementValue() {
+    value -= valueChange;
+    if (value < minValue) {
+        value = minValue;
     }
 }
-void Parameter::setAsBackParameter(){
-    back_from_sub_list = true ;
+
+void Parameter::incrementValue() {
+    value += valueChange;
+    if (value > maxValue) {
+        value = maxValue;
+    }
 }
 
-uint8_t Parameter::isBackParameter(){
-    return back_from_sub_list ;
+void Parameter::setMinValue(VALUE_TYPE minValue) {
+    this->minValue = minValue;
 }
-uint8_t Parameter::isCountingNoChangeableError(){
-    return no_changeable_error_counting ;
+
+void Parameter::setMaxValue(VALUE_TYPE maxValue) {
+    this->maxValue = maxValue;
 }
-uint8_t Parameter::isValueVisible(){
-    return visible_value ;
+
+void Parameter::setValueChange(VALUE_TYPE change) {
+    valueChange = change;
 }
-uint16_t Parameter::getValue(){
-    return value ;
+
+void Parameter::prepareJsonObject(JsonObject jsonObject) {
+    prepareValueJsonObject(jsonObject);
+    jsonObject[MIN_VALUE_KEY] = minValue;
+    jsonObject[MAX_VALUE_KEY] = maxValue;
+    jsonObject[VALUE_CHANGE_KEY] = valueChange;
 }
-string Parameter::getUnit(){
-    return unit ;
+
+void Parameter::parseParameterFromJsonObject(JsonObject jsonObject) {
+    if ((jsonObject.containsKey(MIN_VALUE_KEY)) && (jsonObject[MIN_VALUE_KEY].is<VALUE_TYPE>())) {
+        setMinValue(jsonObject[MIN_VALUE_KEY].as<VALUE_TYPE>());
+    }
+    
+    if ((jsonObject.containsKey(MAX_VALUE_KEY)) && (jsonObject[MAX_VALUE_KEY].is<VALUE_TYPE>())) {
+        setMaxValue(jsonObject[MAX_VALUE_KEY].as<VALUE_TYPE>());
+    }
+
+    if ((jsonObject.containsKey(VALUE_CHANGE_KEY)) && (jsonObject[VALUE_CHANGE_KEY].is<VALUE_TYPE>())) {
+        setValueChange(jsonObject[VALUE_CHANGE_KEY].as<VALUE_TYPE>());
+    }
 }
