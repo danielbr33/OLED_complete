@@ -1,9 +1,9 @@
 #include "InterfaceBuilder.h"
 
 MenuItem* InterfaceBuilder::loadInterFaceFromJsonFile(std::string filepath) {
-    StaticJsonDocument<JSON_DOCUMENT_SIZE> doc;
+    StaticJsonDocument<1024> doc;
 #ifdef STM32
-    char* data;
+    char* data = nullptr;
 	cardSD::SD_Status sd_status;
     sd_status = cardSD::getInstance().readFile((char*)filepath.c_str(), &data);
     DeserializationError error = deserializeJson(doc, data);
