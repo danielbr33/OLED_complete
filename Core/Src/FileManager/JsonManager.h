@@ -21,7 +21,7 @@ public:
 		return instance;
 	}
 	typedef enum {JSON_OK, JSON_ERROR, SD_ERROR} Json_Status;
-	Json_Status getJsonDocument(char *path, StaticJsonDocument<1024> doc);
+	Json_Status getJsonDocument(char *path, StaticJsonDocument<1024>* doc);
 private:
 	JsonManager();
 };

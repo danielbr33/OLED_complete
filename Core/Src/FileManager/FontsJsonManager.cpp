@@ -12,7 +12,7 @@ FontsJsonManager::FontsJsonManager() {
 	StaticJsonDocument<1024> document;
 	jsonFontsStatus = JSON_OK;
 	JsonManager::Json_Status jsonTempStatus;
-	jsonTempStatus = JsonManager::getInstance().getJsonDocument("FontsJson.json", document);
+	jsonTempStatus = JsonManager::getInstance().getJsonDocument("FontsJson.json", &document);
 	if(jsonTempStatus == JsonManager::SD_ERROR){
 		jsonFontsStatus = JSON_SD_ERR;
 	}

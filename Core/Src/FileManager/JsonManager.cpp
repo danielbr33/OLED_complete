@@ -15,7 +15,7 @@ JsonManager::~JsonManager() {
 	// TODO Auto-generated destructor stub
 }
 
-JsonManager::Json_Status JsonManager::getJsonDocument(char *path, StaticJsonDocument<1024> doc){
+JsonManager::Json_Status JsonManager::getJsonDocument(char *path, StaticJsonDocument<1024>* doc){
 	Json_Status json_status;
 	char* read_data = nullptr;
 	cardSD::SD_Status sd_status;
@@ -28,7 +28,7 @@ JsonManager::Json_Status JsonManager::getJsonDocument(char *path, StaticJsonDocu
 		return json_status;
 	}
 	if(json_status == JSON_OK){
-		DeserializationError error = deserializeJson(doc, read_data);
+		DeserializationError error = deserializeJson(*doc, read_data);
 		if (error){
 			json_status = JSON_ERROR;
 			if(read_data!=nullptr)
