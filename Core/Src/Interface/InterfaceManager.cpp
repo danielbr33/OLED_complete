@@ -63,7 +63,7 @@ InterfaceManager::InterfaceManager() {
         saveAction->setFunction(&(this->saveInterface));
     }
 
-    display();
+    //display();
 	this->button = BUTTON_NOT_PRESSED;
     while (true) {
 #ifdef __linux__

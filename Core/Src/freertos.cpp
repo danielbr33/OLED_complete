@@ -160,7 +160,6 @@ void StartOledTask(void const * argument)
   for(;;)
   {
 //	oled->oledInterruptDMA();
-	oled2->oledInterrupt();
 	osDelay(50);
   }
   /* USER CODE END StartOledTask */
@@ -176,7 +175,6 @@ void StartOledTask(void const * argument)
 void StartInterfaceTask(void const * argument)
 {
   /* USER CODE BEGIN StartInterfaceTask */
-	  InterfaceManager(&huart3, oled2);
   /* Infinite loop */
   for(;;)
   {

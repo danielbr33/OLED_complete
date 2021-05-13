@@ -105,6 +105,10 @@ int main(void)
 	i2c_settings.hi2c = &hi2c1;
 
 	oled2 = new SSD1306(i2c_settings);
+
+	  InterfaceManager(&huart3, oled2);
+
+		oled2->oledInterrupt();
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/

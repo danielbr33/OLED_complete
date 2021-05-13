@@ -3,9 +3,13 @@
 MenuItem* InterfaceBuilder::loadInterFaceFromJsonFile(std::string filepath) {
     StaticJsonDocument<JSON_DOCUMENT_SIZE> doc;
 #ifdef STM32
-    char* data;
+    char* data = nullptr;
 	cardSD::SD_Status sd_status;
     sd_status = cardSD::getInstance().readFile((char*)filepath.c_str(), &data);
+	if (sd_status != cardSD::SD_OK){
+		if(data!=nullptr)
+			delete(data);
+	}
     DeserializationError error = deserializeJson(doc, data);
     if (error == 0)
         return loadMenuItem(doc.as<JsonVariant>());
