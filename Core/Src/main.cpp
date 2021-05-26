@@ -53,7 +53,6 @@
 
 /* USER CODE BEGIN PV */
 SSD1306* oled2;
-InterfaceManager* Interface2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -105,10 +104,6 @@ int main(void)
 	i2c_settings.hi2c = &hi2c1;
 
 	oled2 = new SSD1306(i2c_settings);
-
-	  InterfaceManager(&huart3, oled2);
-
-		oled2->oledInterrupt();
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -137,12 +132,6 @@ int main(void)
 	MX_SPI1_Init();
 	MX_TIM1_Init();
 	/* USER CODE BEGIN 2 */
-	oled2->changeDMA(SSD1306::SET_ON);
-	oled2->init();
-	HAL_Delay(1000);
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-	TIM1->CCR1 = 99;
-	uint8_t i=0;
 
 	/* USER CODE END 2 */
 
