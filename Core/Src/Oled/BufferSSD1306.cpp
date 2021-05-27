@@ -43,6 +43,8 @@ void BufferSSD1306::addLetter(uint8_t letter, uint8_t width, uint8_t height, Col
 #ifdef DEFAULT_MODE
 	addLetter(letter, defaultFont.name, color, coord_X, coord_Y);
 #else
+	if (letter < ' ' || letter >'~')
+		letter = ' ';
 	ready = false;
 	if(actualFont == nullptr){
 		if(findFont(width, height) == false){
@@ -105,6 +107,8 @@ void BufferSSD1306::addLetter(uint8_t letter, string name, Color color, uint8_t 
 	#ifdef DEFAULT_MODE
 	name = defaultFont.name;
 	#endif
+	if (letter < ' ' || letter >'~')
+		letter = ' ';
 	if(actualFont == nullptr){
 		if(findFont(name) == false){
 			if(name == defaultFont.name)
@@ -184,9 +188,15 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 			createFont(width, height);
 			findFont(width, height);
 		}
+	uint8_t current_X = coord_X;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
-		uint8_t current_X = coord_X + i * actualFont->getWidth();
-		addLetter(text[i], width, height, color, current_X, coord_Y);
+		if(text[i] == '\n'){
+			coord_Y += (actualFont->getHeight() + 4);
+			current_X = coord_X;
+		}
+		else
+			addLetter(text[i], width, height, color, current_X, coord_Y);
+		current_X += actualFont->getWidth();
 	}
 	ready = true;
 #endif
@@ -214,9 +224,15 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 				createFont(name);
 			findFont(name);
 		}
+	uint8_t current_X;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
-		uint8_t current_X = coord_X + i * actualFont->getWidth();
-		addLetter(text[i], name, color, current_X, coord_Y);
+		if(text[i] == '\n'){
+			coord_Y += (actualFont->getHeight() + 4);
+			current_X = coord_X;
+		}
+		else
+			addLetter(text[i], name, color, current_X, coord_Y);
+		current_X += actualFont->getWidth();
 	}
 	ready = true;
 }

@@ -37,7 +37,7 @@ void InterfaceDisplayManager::showItem(std::string itemText, uint8_t coordY, uin
 #endif
 }
 #else
-	void InterfaceDisplayManager::showItem(std::string itemText){
+void InterfaceDisplayManager::showItem(std::string itemText){
 #ifdef __linux__
     printw("%s", itemText.c_str());
 #elif defined(_WIN32) || defined(_WIN64)
@@ -53,6 +53,8 @@ void InterfaceDisplayManager::displayMenuItemList(MenuItemsList* item) {
     std::ostringstream stringStream;
     stringStream << item->getName() << std::endl;
     stringStream << "  > " << item->getSelectedMenuItem()->getName();
+    std::string text = stringStream.str();
+    const char* text2 = text.c_str();
 #ifdef STM32
     showItem(stringStream.str(), 2, 2, oled);
 #else
