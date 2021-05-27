@@ -183,16 +183,23 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 			findFont(width, height);
 		}
 	}
-	if(actualFont->getWidth()!=width || actualFont->getHeight()!=height)
+	if(actualFont->getWidth()!=width || actualFont->getHeight()!=height){
 		if(findFont(width, height) == false){
 			createFont(width, height);
 			findFont(width, height);
 		}
+	}
+	uint8_t maxHeight = coord_Y;
+	uint8_t minHeight = coord_Y + actualFont->getHeightReal();
+	clearLines(maxHeight, minHeight, color);
 	uint8_t current_X = coord_X;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		if(text[i] == '\n'){
 			coord_Y += (actualFont->getHeight() + 4);
 			current_X = coord_X;
+			uint8_t maxHeight = coord_Y;
+			uint8_t minHeight = coord_Y + actualFont->getHeightReal();
+			clearLines(maxHeight, minHeight, color);
 		}
 		else
 			addLetter(text[i], width, height, color, current_X, coord_Y);
@@ -200,6 +207,22 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 	}
 	ready = true;
 #endif
+}
+
+void BufferSSD1306::clearLines(uint8_t from, uint8_t to, Color color){
+	for (uint8_t line=from; line<=to; line++){
+		uint8_t liczba = 0;
+		uint8_t part = line/BUFFOR_PART_HEIGHT;
+		uint8_t bit = line%8;
+		for (uint8_t i=0; i<buffer_width; i++){
+			if (color == White){
+				setBit(table[part][i], bit);
+			table[part][i] = 255;
+			}
+			else
+				clearBit(table[part][i], bit);
+		}
+	}
 }
 
 void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord_X, uint8_t coord_Y) {
@@ -216,7 +239,7 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 			findFont(name);
 		}
 	}
-	if(actualFont->getName()!=name)
+	if(actualFont->getName()!=name){
 		if(findFont(name) == false){
 			if(name==defaultFont.name)
 				createDefaultFont();
@@ -224,11 +247,18 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 				createFont(name);
 			findFont(name);
 		}
+	}
+	uint8_t maxHeight = coord_Y;
+	uint8_t minHeight = coord_Y + actualFont->getHeightReal();
+	clearLines(maxHeight, minHeight, color);
 	uint8_t current_X;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		if(text[i] == '\n'){
 			coord_Y += (actualFont->getHeight() + 4);
 			current_X = coord_X;
+			uint8_t maxHeight = coord_Y;
+			uint8_t minHeight = coord_Y + actualFont->getHeightReal();
+			clearLines(maxHeight, minHeight, color);
 		}
 		else
 			addLetter(text[i], name, color, current_X, coord_Y);

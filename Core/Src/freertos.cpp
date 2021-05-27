@@ -156,12 +156,10 @@ void StartDefaultTask(void const * argument)
 void StartOledTask(void const * argument)
 {
   /* USER CODE BEGIN StartOledTask */
-	oled2->changeDMA(SSD1306::SET_ON);
-	oled2->init();
+
   /* Infinite loop */
   for(;;)
   {
-	oled2->oledInterrupt();
 	osDelay(50);
   }
   /* USER CODE END StartOledTask */
@@ -177,7 +175,8 @@ void StartOledTask(void const * argument)
 void StartInterfaceTask(void const * argument)
 {
   /* USER CODE BEGIN StartInterfaceTask */
-
+	oled2->changeDMA(SSD1306::SET_ON);
+	oled2->init();
 	InterfaceManager(&huart3, oled2);
   /* Infinite loop */
   for(;;)

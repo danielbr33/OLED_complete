@@ -34,6 +34,7 @@ void InterfaceDisplayManager::showItem(std::string itemText, uint8_t coordY, uin
     oled->writeDefaultString((char*)itemText.c_str(), BufferSSD1306::White, 2, 2);
 #else
     oled->writeString((char*)itemText.c_str(), 7, 10, BufferSSD1306::White, coordY, coordX);
+    oled->oledRefresh();
 #endif
 }
 #else

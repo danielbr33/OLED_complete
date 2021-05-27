@@ -46,6 +46,7 @@ public:
 private:
 	void operateWhiteTableValue(uint8_t x, uint8_t y, uint8_t value);  //function modifying element of buffor
 	void operateBlackTableValue(uint8_t x, uint8_t y, uint8_t value);  //function modifying element of buffor
+	void clearLines(uint8_t from, uint8_t to, Color color);
 	void createDefaultFont();
 	#ifndef DEFAULT_MODE
 	bool checkJsonStatus();
