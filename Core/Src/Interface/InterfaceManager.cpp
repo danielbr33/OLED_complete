@@ -56,7 +56,7 @@ InterfaceManager::InterfaceManager() {
     this->oled = oled;
     this->interfaceUart = uart;
 #endif
-    interfaceLocal = new Interface("InterfaceFile.json");
+    interfaceLocal = new Interface("Interface.json");
 
     Action* saveAction = interfaceLocal->getActionByName("Save");
     if (saveAction != nullptr) {

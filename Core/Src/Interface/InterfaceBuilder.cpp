@@ -37,7 +37,7 @@ void InterfaceBuilder::loadMenuItemsListFromJsonArray(MenuItemsList* parent, Jso
 }
 
 MenuItem* InterfaceBuilder::loadMenuItem(JsonVariant v) {
-    if (v.containsKey(MENU_ITEM_TYPE_KEY)) {
+    if (v.containsKey("type")) {
         if (v[MENU_ITEM_TYPE_KEY].as<std::string>() == MENU_ITEM_TYPE_VALUE) {
             return new Value(v.as<JsonObject>());
         } else if (v[MENU_ITEM_TYPE_KEY].as<std::string>() == MENU_ITEM_TYPE_PARAMETER) {
