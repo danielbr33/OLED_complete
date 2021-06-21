@@ -191,7 +191,7 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 	}
 	uint8_t maxHeight = coord_Y;
 	uint8_t minHeight = coord_Y + actualFont->getHeightReal();
-	clearLines(maxHeight, minHeight, color);
+	//clearLines(maxHeight, minHeight, color);
 	uint8_t current_X = coord_X;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		if(text[i] == '\n'){
@@ -199,7 +199,7 @@ void BufferSSD1306::addText(char* text,  uint8_t width, uint8_t height, Color co
 			current_X = coord_X;
 			uint8_t maxHeight = coord_Y;
 			uint8_t minHeight = coord_Y + actualFont->getHeightReal();
-			clearLines(maxHeight, minHeight, color);
+			//clearLines(maxHeight, minHeight, color);
 		}
 		else
 			addLetter(text[i], width, height, color, current_X, coord_Y);
@@ -250,7 +250,7 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 	}
 	uint8_t maxHeight = coord_Y;
 	uint8_t minHeight = coord_Y + actualFont->getHeightReal();
-	clearLines(maxHeight, minHeight, color);
+	//clearLines(maxHeight, minHeight, color);
 	uint8_t current_X;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		if(text[i] == '\n'){
@@ -258,7 +258,7 @@ void BufferSSD1306::addText(char* text,  string name, Color color, uint8_t coord
 			current_X = coord_X;
 			uint8_t maxHeight = coord_Y;
 			uint8_t minHeight = coord_Y + actualFont->getHeightReal();
-			clearLines(maxHeight, minHeight, color);
+			//clearLines(maxHeight, minHeight, color);
 		}
 		else
 			addLetter(text[i], name, color, current_X, coord_Y);

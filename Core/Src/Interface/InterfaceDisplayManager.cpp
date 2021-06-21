@@ -6,6 +6,7 @@ void InterfaceDisplayManager::displayManuItem(MenuItem* item, SSD1306* oledPoint
 #else
 void InterfaceDisplayManager::displayManuItem(MenuItem* item) {
 #endif
+	oledPointer->fillBuffer(BufferSSD1306::Black);
     switch (item->getType()) {
         case MenuItem::MENU_ITEMS_LIST:
             displayMenuItemList((MenuItemsList*)item, oledPointer);
@@ -57,7 +58,7 @@ void InterfaceDisplayManager::displayMenuItemList(MenuItemsList* item) {
     std::string text = stringStream.str();
     const char* text2 = text.c_str();
 #ifdef STM32
-    showItem(stringStream.str(), 2, 2, oled);
+    showItem(stringStream.str(), 5, 2, oled);
 #else
     showItem(stringStream.str());
 #endif
@@ -123,9 +124,10 @@ void InterfaceDisplayManager::displayValue(Value* item) {
 #endif
     std::ostringstream stringStream;
     stringStream << item->getName() << std::endl;
-    stringStream << "   " << std::fixed << std::setprecision(item->getAmountOfDigits()) << item->getValue() << " " << item->getUnit() << "   " << std::endl;
+    //If you have hard fault in this place, then add -u _printf_float to linker
+    stringStream << std::fixed << std::setprecision(item->getAmountOfDigits()) << item->getValue() << " " << item->getUnit() << "   " << std::endl;
 #ifdef STM32
-    showItem(stringStream.str(), 42, 2, oled);
+    showItem(stringStream.str(), 15, 2, oled);
 #else
     showItem(stringStream.str());
 #endif
